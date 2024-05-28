@@ -16,6 +16,7 @@ export default function LoginPage() {
         Login(data.id, data.password)
             .then((data) => {
                 if (data.message === 'login successful') {
+                    sessionStorage.setItem('userId', data._id);
                     navigate('/');
                 }
             })
