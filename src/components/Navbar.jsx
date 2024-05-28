@@ -7,7 +7,7 @@ export default function NavBar() {
         <div className="flex justify-between mx-32 my-6">
             <img src={logo} />
             <div className="flex gap-12">
-                <Link>정원</Link>
+                <Link to="/garden">정원</Link>
                 <Link>꽃설명</Link>
             </div>
             <div className="flex gap-3">
