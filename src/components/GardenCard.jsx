@@ -4,16 +4,9 @@ export default function GardenCard(props) {
     // 나중에 방 정보랑 연결할 예정
     const roomInfo = props.roomInfo
     const showModal = props.showModal
-    // const roomInfo = {
-    //     name: '최대글자가아홉글자',
-    //     image_url:
-    //         'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    //     category: '기술',
-    //     time: 30,
-    //     title: '대통령은 국회에 출석하여 발언하거나',
-    // };
+    
     return (
-        <div className="bg-white rounded-3xl w-[500px] py-4 flex justify-center space-x-6" onClick={showModal}>
+        <div className="bg-white rounded-3xl w-[500px] py-4 flex justify-center space-x-6 hover:cursor-pointer" onClick={showModal}>
             <div>
                 <img src={roomInfo.image_url} className="w-24 h-24 rounded-full mx-auto mb-3" />
                 <p className="font-semibold">{roomInfo.name}</p>
