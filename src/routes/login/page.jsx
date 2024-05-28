@@ -12,7 +12,9 @@ export default function LoginPage() {
         formState: { errors },
     } = useForm();
     const onSubmit = (data) => {
-        Login(data.id, data.password1).then(data=>console.log(data)).catch(err=>console.log(err.data))
+        Login(data.id, data.password1)
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
     };
 
     return (
@@ -23,7 +25,10 @@ export default function LoginPage() {
                     <p className="font-bold text-3xl mb-6">로그인</p>
                     <p className="text-[#777771] mb-10">쏙쏙정원에 오신 것을 환영합니다!</p>
                 </div>
-                <form className="bg-white py-14 px-12 rounded-3xl flex-col space-y-6 justify-items-center" onSubmit={handleSubmit(onSubmit)}>
+                <form
+                    className="bg-white py-14 px-12 rounded-3xl flex-col space-y-6 justify-items-center"
+                    onSubmit={handleSubmit(onSubmit)}
+                >
                     <div>
                         <p>아이디 *</p>
                         <input
@@ -36,12 +41,12 @@ export default function LoginPage() {
                     <div>
                         <p>비밀번호 *</p>
                         <input
-                                {...register('password', { required: '비밀번호를 입력해주세요' })}
-                                placeholder="비밀번호"
-                                className={common}
-                                type='password'
-                            />
-                            <p className="text-red-500">{errors?.password?.message}</p>
+                            {...register('password', { required: '비밀번호를 입력해주세요' })}
+                            placeholder="비밀번호"
+                            className={common}
+                            type="password"
+                        />
+                        <p className="text-red-500">{errors?.password?.message}</p>
                     </div>
 
                     <FormButton text="로그인" able={true} />
