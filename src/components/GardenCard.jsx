@@ -1,3 +1,5 @@
+import CategoryTag from "./CategoryTag";
+
 export default function GardenCard(props) {
     // 나중에 방 정보랑 연결할 예정
     const roomInfo = props.roomInfo
@@ -17,8 +19,8 @@ export default function GardenCard(props) {
                 <p className="font-semibold">{roomInfo.name}</p>
             </div>
             <div className="flex-col my-auto space-y-3">
-                <div className="flex space-x-9">
-                    <p>{roomInfo.category}</p>
+                <div className="flex space-x-9 items-center">
+                    <CategoryTag category={roomInfo.category}/>
                     <p>{roomInfo.time}분</p>
                 </div>
                 <p className="font-semibold">{roomInfo.title}</p>

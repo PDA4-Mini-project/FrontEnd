@@ -1,3 +1,4 @@
+import CategoryTag from './CategoryTag';
 import FuncButton from './FuncButton';
 
 export default function RoomInfoModal(props) {
@@ -15,8 +16,8 @@ export default function RoomInfoModal(props) {
             onClick={handleModalClick}
         >
             <div className='w-[648px] h-fit bg-white py-14 px-28 rounded-3xl grid justify-items-center gap-9'>
-                <di className='flex w-full justify-between'>
-                    <p>{roomInfo.category}</p>
+                <di className='flex w-full justify-between items-center'>
+                    <CategoryTag category={roomInfo.category} />
                     <p className='font-bold text-xl'>{roomInfo.title}</p>
                     <p className='font-bold text-xl'>{roomInfo.time}분</p>
                 </di>
