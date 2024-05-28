@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pencil } from 'react-bootstrap-icons';
 import black from '~/public/흑백꽃.png';
 import color from '~/public/컬러꽃.png';
+import { GetProfile } from '../../lib/apis/profile';
 
 export default function ProfilePage() {
     // 더미라서 나중에 유저 정보 받아와서 껴줘야함
     const [user, setUser] = useState({
         name: 'User',
-        imageUrl:
+        image_url:
             'https://images.unsplash.com/photo-1557555187-23d685287bc3?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        portpolioUrl: 'https://어쩌구저쩌구',
+        portfolio_url: 'https://어쩌구저쩌구',
         introduction: '새로운 세상을 만들어가 너와 함께라면 분명 멋질거야',
-        reviewScore: 3,
     });
+    const [reviewScore, setReviewScore] = useState(0);
 
     const common = 'w-12 h-12';
 
@@ -31,22 +32,32 @@ export default function ProfilePage() {
         return scores;
     };
 
+    useEffect(() => {
+        GetProfile('ha')
+            .then((data) => {
+                console.log(data);
+                setUser(data.profile);
+                setReviewScore(data.reviewInfo.review_score);
+            })
+            .catch((err) => console.log(err));
+    }, []);
+
     return (
         <div>
             <div className="bg-white flex justify-center space-x-[15%] py-16 mt-12">
                 <div>
-                    <img className="w-52 h-52 rounded-full" src={user.imageUrl} />
+                    <img className="w-52 h-52 rounded-full" src={user.image_url} />
                     <div className="flex justify-center mt-4">
                         <p className="text-xl">{user.name}</p>
                         <Pencil />
                     </div>
                 </div>
                 <div className="grid">
-                    <div className="flex space-x-3">{reviewScores(user.reviewScore)}</div>
+                    <div className="flex space-x-3">{reviewScores(reviewScore)}</div>
                     <p className="text-xl">자기소개</p>
                     <p className="text-xl">{user.introduction}</p>
                     <p className="text-xl">포트폴리오</p>
-                    <p className="text-xl">{user.portpolioUrl}</p>
+                    <p className="text-xl">{user.portfolio_url}</p>
                 </div>
             </div>
         </div>
