@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import FormButton from '../../components/FormButton';
 import NavBar from '../../components/Navbar';
 import { Login } from '../../lib/apis/users';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
     const common = 'rounded-full border-2 border-[#DBDAD3] w-full h-12 px-4';
@@ -12,10 +13,15 @@ export default function LoginPage() {
         formState: { errors },
     } = useForm();
     const onSubmit = (data) => {
-        Login(data.id, data.password1)
-            .then((data) => console.log(data))
+        Login(data.id, data.password)
+            .then((data) => {
+                if (data.message === 'login successful') {
+                    navigate('/');
+                }
+            })
             .catch((err) => console.log(err));
     };
+    const navigate = useNavigate();
 
     return (
         <>
