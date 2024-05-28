@@ -33,10 +33,15 @@ export default function ProfilePage() {
     };
 
     useEffect(() => {
-        GetProfile('ha')
+        const userId = sessionStorage.getItem('userId');
+        GetProfile(userId)
             .then((data) => {
                 console.log(data);
                 setUser(data.profile);
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    name: data.userName.userName,
+                }));
                 setReviewScore(data.reviewInfo.review_score);
             })
             .catch((err) => console.log(err));
@@ -47,9 +52,9 @@ export default function ProfilePage() {
             <div className="bg-white flex justify-center space-x-[15%] py-16 mt-12">
                 <div>
                     <img className="w-52 h-52 rounded-full" src={user.image_url} />
-                    <div className="flex justify-center mt-4">
+                    <div className="flex justify-center mt-4 space-x-2">
                         <p className="text-xl">{user.name}</p>
-                        <Pencil />
+                        <Pencil className="my-auto" />
                     </div>
                 </div>
                 <div className="grid">
