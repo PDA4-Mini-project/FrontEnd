@@ -2,6 +2,7 @@ import { useState } from 'react';
 import NavBar from '../../components/Navbar';
 import GardenCard from '../../components/GardenCard';
 import RoomInfoModal from '../../components/RoomInfoModal';
+import FuncButton from '../../components/FuncButton';
 
 export default function GardenPage() {
     // 나중에 정원 목록 불러오는 API와 연결해야함
@@ -55,7 +56,7 @@ export default function GardenPage() {
             title: '대통령은 국회에 출석하여 발언하거나',
         },
     ];
-    const [showModal, setShowModal] = useState(false);
+    const [infoModal, setInfoModal] = useState(false);
     const [roomNum, setRoomNum] = useState(0);
 
     return (
@@ -63,13 +64,14 @@ export default function GardenPage() {
             <NavBar />
             <div>
                 <div className='grid grid-cols-2 justify-items-center px-14 gap-y-11'>
+                    <FuncButton text="정원 만들기" />
                     {roomList.map((el, i) => (
                         <div onClick={()=>setRoomNum(i)} key={i}>
-                            <GardenCard roomInfo={el} showModal={() => setShowModal(true)} />
+                            <GardenCard roomInfo={el} showModal={() => setInfoModal(true)} />
                         </div>
                     ))}
                 </div>
-                {showModal ? <RoomInfoModal onHide={() => setShowModal(false)} roomInfo={roomList[roomNum]} /> : null}
+                {infoModal ? <RoomInfoModal onHide={() => setInfoModal(false)} roomInfo={roomList[roomNum]} /> : null}
             </div>
         </>
     );
