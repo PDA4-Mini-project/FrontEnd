@@ -58,15 +58,16 @@ export default function GardenPage() {
     ];
     const [infoModal, setInfoModal] = useState(false);
     const [roomNum, setRoomNum] = useState(0);
+    const [createModal, setCreateModal] = useState(false);
 
     return (
         <>
             <NavBar />
             <div>
+                <FuncButton text='정원 만들기' size='sm' color='green' func={() => setCreateModal(true)} />
                 <div className='grid grid-cols-2 justify-items-center px-14 gap-y-11'>
-                    <FuncButton text="정원 만들기" />
                     {roomList.map((el, i) => (
-                        <div onClick={()=>setRoomNum(i)} key={i}>
+                        <div onClick={() => setRoomNum(i)} key={i}>
                             <GardenCard roomInfo={el} showModal={() => setInfoModal(true)} />
                         </div>
                     ))}
