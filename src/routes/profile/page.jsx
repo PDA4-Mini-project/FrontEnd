@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Pencil } from 'react-bootstrap-icons';
+import black from '~/public/흑백꽃.png';
+import color from '~/public/컬러꽃.png';
 
 export default function ProfilePage() {
     // 더미라서 나중에 유저 정보 받아와서 껴줘야함
@@ -12,9 +14,26 @@ export default function ProfilePage() {
         reviewScore: 3,
     });
 
+    const common = 'w-12 h-12';
+
+    const reviewScores = (score) => {
+        const scores = [];
+        // 이미지 저장 기능
+        for (let i = 0; i < 5; i++) {
+            // 현재 인덱스 i와 평점을 비교
+            if (i < Math.floor(score)) {
+                // 현재 인덱스가 평점 미만이면 oneBean
+                scores.push(<img key={i} src={color} alt="꽃" className={common} />);
+            } else {
+                scores.push(<img key={i} src={black} alt="빈 꽃" className={common} />);
+            }
+        }
+        return scores;
+    };
+
     return (
         <div>
-            <div className="bg-white flex justify-center space-x-[15%] py-16">
+            <div className="bg-white flex justify-center space-x-[15%] py-16 mt-12">
                 <div>
                     <img className="w-52 h-52 rounded-full" src={user.imageUrl} />
                     <div className="flex justify-center mt-4">
@@ -22,7 +41,8 @@ export default function ProfilePage() {
                         <Pencil />
                     </div>
                 </div>
-                <div>
+                <div className="grid">
+                    <div className="flex space-x-3">{reviewScores(user.reviewScore)}</div>
                     <p className="text-xl">자기소개</p>
                     <p className="text-xl">{user.introduction}</p>
                     <p className="text-xl">포트폴리오</p>
