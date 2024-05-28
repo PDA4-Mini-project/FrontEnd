@@ -21,6 +21,7 @@ export default defineConfig({
             { find: '~/routers', replacement: '/src/routers' },
             { find: '~/routes', replacement: '/src/routes' },
             { find: '~/store', replacement: '/src/store' },
+            { find: '~/public', replacement: '/public' },
         ],
     },
 });
