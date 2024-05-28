@@ -3,6 +3,7 @@ import FormButton from '../../components/FormButton';
 import NavBar from '../../components/Navbar';
 import { useForm } from 'react-hook-form';
 import { Signup } from '../../lib/apis/users';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
     const common = 'rounded-full border-2 border-[#DBDAD3] w-full h-12 px-4';
@@ -15,9 +16,14 @@ export default function SignupPage() {
     } = useForm();
     const onSubmit = (data) => {
         Signup(data.name, data.email, data.id, data.password1)
-            .then((data) => console.log(data))
+            .then((data) => {
+                if (data.message === 'User registered successfully') {
+                    navigate('/login');
+                }
+            })
             .catch((err) => console.log(err));
     };
+    const navigate = useNavigate();
 
     return (
         <>
@@ -43,7 +49,13 @@ export default function SignupPage() {
                     <div>
                         <p>이메일 *</p>
                         <input
-                            {...register('email', { required: '이메일을 입력해주세요', pattern: /^\S+@\S+$/i })}
+                            {...register('email', {
+                                required: '이메일을 입력해주세요',
+                                pattern: {
+                                    value: /^\S+@\S+$/i,
+                                    message: '유효한 이메일 주소를 입력해주세요',
+                                },
+                            })}
                             placeholder="이메일을 입력하세요"
                             className={common}
                         />

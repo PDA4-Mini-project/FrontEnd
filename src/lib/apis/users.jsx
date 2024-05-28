@@ -12,3 +12,9 @@ export async function Signup(name, email, id, password) {
     });
     return res.data;
 }
+
+export async function Login(id, password) {
+    const data = { _id: id, password: password };
+    const res = await service.post('/login', data);
+    return res.data;
+}
