@@ -14,15 +14,62 @@ export default function GardenPage() {
             time: 30,
             title: '대통령은 국회에 출석하여 발언하거나',
         },
+        {
+            name: '최대글자가아홉글자',
+            image_url:
+                'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category: '상담',
+            time: 30,
+            title: '대통령은 국회에 출석하여 발언하거나',
+        },
+        {
+            name: '최대글자가아홉글자',
+            image_url:
+                'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category: '자기계발',
+            time: 30,
+            title: '대통령은 국회에 출석하여 발언하거나',
+        },
+        {
+            name: '최대글자가아홉글자',
+            image_url:
+                'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category: '예술',
+            time: 30,
+            title: '대통령은 국회에 출석하여 발언하거나',
+        },
+        {
+            name: '최대글자가아홉글자',
+            image_url:
+                'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category: '언어',
+            time: 30,
+            title: '대통령은 국회에 출석하여 발언하거나',
+        },
+        {
+            name: '최대글자가아홉글자',
+            image_url:
+                'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category: '생활',
+            time: 30,
+            title: '대통령은 국회에 출석하여 발언하거나',
+        },
     ];
     const [showModal, setShowModal] = useState(false);
+    const [roomNum, setRoomNum] = useState(0);
+
     return (
         <>
             <NavBar />
             <div>
-                <h1>여기서 정원 리스트 보여줄것입니다</h1>
-                <GardenCard roomInfo={roomList[0]} showModal={() => setShowModal(true)} />
-                {showModal ? <RoomInfoModal onHide={() => setShowModal(false)} roomInfo={roomList[0]} /> : null}
+                <div className='grid grid-cols-2 justify-items-center px-14 gap-y-11'>
+                    {roomList.map((el, i) => (
+                        <div onClick={()=>setRoomNum(i)} key={i}>
+                            <GardenCard roomInfo={el} showModal={() => setShowModal(true)} />
+                        </div>
+                    ))}
+                </div>
+                {showModal ? <RoomInfoModal onHide={() => setShowModal(false)} roomInfo={roomList[roomNum]} /> : null}
             </div>
         </>
     );
