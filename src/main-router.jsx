@@ -4,6 +4,7 @@ import SignupPage from './routes/signup/page';
 import LoginPage from './routes/login/page';
 import ProfileLayout from './routes/profile/layout';
 import ProfilePage from './routes/profile/page';
+import GardenPage from './routes/garden/page';
 
 const router = createBrowserRouter([
     {
@@ -24,12 +25,17 @@ const router = createBrowserRouter([
         element: <ProfileLayout />,
         children: [
             {
-                path: "",
+                path: '',
                 element: <ProfilePage />,
-                index: true
-            }
-        ]
-    }
+                index: true,
+            },
+        ],
+    },
+    {
+        path: '/garden',
+        element: <GardenPage />,
+        children: [],
+    },
 ]);
 
 export default router;
