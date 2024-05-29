@@ -18,7 +18,7 @@ export default function MainPage() {
                 console.log(data);
                 dispatch(saveUserName(data.userName.userName));
                 dispatch(saveProfile(data.profile));
-                dispatch(saveReviewScore(data.reviewInfo.review_score));
+                dispatch(saveReviewScore(data.reviewData.average_score));
             })
             .catch((err) => console.log(err));
     }, []);
