@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import gardenSlice from './gardenSlice';
+import userSlice from './userSlice';
 
 export const rootReducer = combineReducers({
     garden: gardenSlice,
+    user: userSlice,
 });
 
 const store = configureStore({

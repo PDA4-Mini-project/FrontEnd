@@ -1,21 +1,18 @@
-import { useEffect, useState } from 'react';
 import { Pencil } from 'react-bootstrap-icons';
 import black from '~/public/흑백꽃.png';
 import color from '~/public/컬러꽃.png';
-import { GetProfile } from '../../lib/apis/profile';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import NameEdit from '~/components/profileEdit/NameEdit';
+import IntroEdit from '../../components/profileEdit/IntroEdit';
+import PortfolioEdit from '../../components/profileEdit/PortfolioEdit';
 
 export default function ProfilePage() {
-    // 더미라서 나중에 유저 정보 받아와서 껴줘야함
-    const [user, setUser] = useState({
-        name: 'User',
-        image_url:
-            'https://images.unsplash.com/photo-1557555187-23d685287bc3?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        portfolio_url: 'https://어쩌구저쩌구',
-        introduction: '새로운 세상을 만들어가 너와 함께라면 분명 멋질거야',
-    });
-    const [reviewScore, setReviewScore] = useState(0);
-
+    const user = useSelector((state) => state.user.user);
     const common = 'w-12 h-12';
+    const [nameEdit, setNameEdit] = useState(false);
+    const [introEdit, setIntroEdit] = useState(false);
+    const [portEdit, setPortEdit] = useState(false);
 
     const reviewScores = (score) => {
         const scores = [];
@@ -32,37 +29,51 @@ export default function ProfilePage() {
         return scores;
     };
 
-    useEffect(() => {
-        const userId = sessionStorage.getItem('userId');
-        GetProfile(userId)
-            .then((data) => {
-                console.log(data);
-                setUser(data.profile);
-                setUser((prevUser) => ({
-                    ...prevUser,
-                    name: data.userName.userName,
-                }));
-                setReviewScore(data.reviewInfo.review_score);
-            })
-            .catch((err) => console.log(err));
-    }, []);
-
     return (
         <div>
-            <div className="bg-white flex justify-center space-x-[15%] py-16 mt-12">
+            <div className="bg-white flex justify-center space-x-[12%] py-16 mt-12">
                 <div>
                     <img className="w-52 h-52 rounded-full" src={user.image_url} />
-                    <div className="flex justify-center mt-4 space-x-2">
-                        <p className="text-xl">{user.name}</p>
-                        <Pencil className="my-auto" />
-                    </div>
+                    {nameEdit ? (
+                        // <button onClick={() => setNameEdit(false)}>수정완료</button>
+                        <NameEdit onHide={() => setNameEdit(false)} />
+                    ) : (
+                        <div className="flex justify-center mt-4 space-x-2">
+                            <p className="text-xl">{user.name}</p>
+                            <Pencil className="my-auto hover:cursor-pointer" onClick={() => setNameEdit(true)} />
+                        </div>
+                    )}
                 </div>
-                <div className="grid">
-                    <div className="flex space-x-3">{reviewScores(reviewScore)}</div>
-                    <p className="text-xl">자기소개</p>
-                    <p className="text-xl">{user.introduction}</p>
-                    <p className="text-xl">포트폴리오</p>
-                    <p className="text-xl">{user.portfolio_url}</p>
+                <div className="grid content-between">
+                    <div className="flex space-x-3">{reviewScores(user.review_score)}</div>
+                    <div>
+                        <p className="text-xl mb-3">자기소개</p>
+                        {introEdit ? (
+                            <IntroEdit onHide={() => setIntroEdit(false)} />
+                        ) : (
+                            <div className="flex items-center justify-between">
+                                <p className="text-xl">{user.introduction}</p>
+                                <Pencil
+                                    className="my-auto hover:cursor-pointer w-5 h-5"
+                                    onClick={() => setIntroEdit(true)}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <div>
+                        <p className="text-xl mb-3">포트폴리오</p>
+                        {portEdit ? (
+                            <PortfolioEdit onHide={() => setPortEdit(false)} />
+                        ) : (
+                            <div className="flex items-center justify-between">
+                                <p className="text-xl">{user.portfolio_url}</p>
+                                <Pencil
+                                    className="my-auto hover:cursor-pointer w-5 h-5"
+                                    onClick={() => setPortEdit(true)}
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
