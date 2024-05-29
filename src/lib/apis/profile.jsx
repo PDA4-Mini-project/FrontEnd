@@ -13,9 +13,11 @@ export async function EditName(name) {
     return res.data;
 }
 
-export async function EditIntro(intro) {
-    const res = await service.post('/intro', intro);
-    return res.data;
+export async function EditIntro(content, user_id) {
+    const data = { content: content, user_id: user_id };
+    console.log(data);
+    const res = await service.post('/intro', data);
+    return res;
 }
 
 export async function EditProfileImage(url) {
