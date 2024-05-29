@@ -65,7 +65,9 @@ export default function GardenPage() {
         <>
             <NavBar />
             <div>
-                <FuncButton text="정원 만들기" size="sm" color="green" func={() => setCreateModal(true)} />
+                <div className="flex justify-end pr-[10%] pb-4">
+                    <FuncButton text="정원 만들기" size="sm" color="green" func={() => setCreateModal(true)} />
+                </div>
                 <div className="grid grid-cols-2 justify-items-center px-14 gap-y-11">
                     {roomList.map((el, i) => (
                         <div onClick={() => setRoomNum(i)} key={i}>
