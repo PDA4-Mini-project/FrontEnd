@@ -2,6 +2,8 @@ import { useState } from 'react';
 import NavBar from '../../components/Navbar';
 import GardenCard from '../../components/GardenCard';
 import RoomInfoModal from '../../components/RoomInfoModal';
+import FuncButton from '../../components/FuncButton';
+import GardenCreateModal from '../../components/GardenCreateModal';
 
 export default function GardenPage() {
     // 나중에 정원 목록 불러오는 API와 연결해야함
@@ -55,21 +57,26 @@ export default function GardenPage() {
             title: '대통령은 국회에 출석하여 발언하거나',
         },
     ];
-    const [showModal, setShowModal] = useState(false);
+    const [infoModal, setInfoModal] = useState(false);
     const [roomNum, setRoomNum] = useState(0);
+    const [createModal, setCreateModal] = useState(false);
 
     return (
         <>
             <NavBar />
             <div>
-                <div className='grid grid-cols-2 justify-items-center px-14 gap-y-11'>
+                <div className="flex justify-end pr-[10%] pb-4">
+                    <FuncButton text="정원 만들기" size="sm" color="green" func={() => setCreateModal(true)} />
+                </div>
+                <div className="grid grid-cols-2 justify-items-center px-14 gap-y-11">
                     {roomList.map((el, i) => (
-                        <div onClick={()=>setRoomNum(i)} key={i}>
-                            <GardenCard roomInfo={el} showModal={() => setShowModal(true)} />
+                        <div onClick={() => setRoomNum(i)} key={i}>
+                            <GardenCard roomInfo={el} showModal={() => setInfoModal(true)} />
                         </div>
                     ))}
                 </div>
-                {showModal ? <RoomInfoModal onHide={() => setShowModal(false)} roomInfo={roomList[roomNum]} /> : null}
+                {createModal ? <GardenCreateModal onHide={() => setCreateModal(false)} /> : null}
+                {infoModal ? <RoomInfoModal onHide={() => setInfoModal(false)} roomInfo={roomList[roomNum]} /> : null}
             </div>
         </>
     );
