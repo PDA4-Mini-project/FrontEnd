@@ -3,8 +3,10 @@ import CategoryTagButton from './CategoryTagButton';
 import FuncButton from './FuncButton';
 import { useState } from 'react';
 import FormButton from './FormButton';
+import { createGarden } from '../lib/apis/gardens';
+import { useNavigate } from 'react-router-dom';
 
-export default function GardenCreateModla(props) {
+export default function GardenCreateModal(props) {
     const onHide = props.onHide;
     const handleModalClick = (e) => {
         if (e.target === e.currentTarget) {
@@ -27,10 +29,15 @@ export default function GardenCreateModla(props) {
         watch,
     } = useForm();
     const selectedTime = watch('time');
-
+    const navigate = useNavigate();
     const onSubmit = (data) => {
-        console.log(data);
-        console.log(gardenCategory);
+        const _id = sessionStorage.getItem('userId');
+        const { time, title } = data;
+        const category = gardenCategory;
+
+        createGarden({ _id, time, title, category }).then((data) => {
+            navigate('/garden/inside');
+        });
         onHide();
     };
 
