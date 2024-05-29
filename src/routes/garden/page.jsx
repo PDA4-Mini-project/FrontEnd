@@ -9,8 +9,7 @@ import { getGardenList } from '../../lib/apis/gardens';
 export default function GardenPage() {
     // 나중에 정원 목록 불러오는 API와 연결해야함
     const [roomList, setRoomList] = useState([]);
-    
-    ];
+
     const [infoModal, setInfoModal] = useState(false);
     const [roomNum, setRoomNum] = useState(0);
     const [createModal, setCreateModal] = useState(false);
