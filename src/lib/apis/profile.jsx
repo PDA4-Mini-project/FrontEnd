@@ -8,11 +8,6 @@ export async function GetProfile(id) {
     return res.data;
 }
 
-export async function EditName(name) {
-    const res = await service.post('/name', name);
-    return res.data;
-}
-
 export async function EditIntro(content, user_id) {
     const data = { content: content, user_id: user_id };
     console.log(data);

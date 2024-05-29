@@ -23,3 +23,8 @@ export async function Logout() {
     const res = await service.post('/logout');
     return res;
 }
+
+export async function EditName(name, user_id) {
+    const res = await service.patch(`/${user_id}/nickName`, {nickName: name});
+    return res;
+}
