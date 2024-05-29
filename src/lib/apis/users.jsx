@@ -18,3 +18,8 @@ export async function Login(id, password) {
     const res = await service.post('/login', data);
     return res.data;
 }
+
+export async function Logout() {
+    const res = await service.post('/logout');
+    return res;
+}
