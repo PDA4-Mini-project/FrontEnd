@@ -28,7 +28,10 @@ import s2 from '/flowers/s2.png';
 import s3 from '/flowers/s3.png';
 import s4 from '/flowers/s4.png';
 import s5 from '/flowers/s5.png';
+import no from '/notalent.png';
 import { useSelector } from 'react-redux';
+import FuncButton from './FuncButton';
+import { useNavigate } from 'react-router-dom';
 
 export default function TalentFlowers() {
     const flowers = useSelector((state) => state.userTheme);
@@ -102,6 +105,8 @@ export default function TalentFlowers() {
         s5,
     };
 
+    const navigate = useNavigate();
+
     return (
         <div className="bg-white mt-12 p-12 grid gap-12">
             <p className="font-bold text-xl text-center">나의 재능꽃</p>
@@ -118,8 +123,10 @@ export default function TalentFlowers() {
                 </div>
             ))}
             {!flowers && (
-                <div>
-                    <img />
+                <div className="grid justify-items-center gap-6">
+                    <img src={no} />
+                    <p className="font-bold text-xl">아직 재능꽃이 없어요</p>
+                    <FuncButton text="꽃 키우러가기" func={() => navigate('/garden')} color="green" />
                 </div>
             )}
         </div>
