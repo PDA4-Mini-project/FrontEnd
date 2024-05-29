@@ -1,10 +1,14 @@
 import { RouterProvider } from 'react-router-dom';
 import router from './main-router';
+import { Provider } from 'react-redux';
+import store from './store/store';
 
 function App() {
     return (
         <>
-            <RouterProvider router={router} />
+            <Provider store={store}>
+                <RouterProvider router={router} />
+            </Provider>
         </>
     );
 }
