@@ -1,20 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Pencil } from 'react-bootstrap-icons';
 import black from '~/public/흑백꽃.png';
 import color from '~/public/컬러꽃.png';
-import { GetProfile } from '../../lib/apis/profile';
+import { useSelector } from 'react-redux';
 
 export default function ProfilePage() {
-    // 더미라서 나중에 유저 정보 받아와서 껴줘야함
-    const [user, setUser] = useState({
-        name: 'User',
-        image_url:
-            'https://images.unsplash.com/photo-1557555187-23d685287bc3?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        portfolio_url: 'https://어쩌구저쩌구',
-        introduction: '새로운 세상을 만들어가 너와 함께라면 분명 멋질거야',
-    });
-    const [reviewScore, setReviewScore] = useState(0);
-
+    const user = useSelector((state) => state.user.user);
     const common = 'w-12 h-12';
 
     const reviewScores = (score) => {
@@ -32,21 +22,6 @@ export default function ProfilePage() {
         return scores;
     };
 
-    useEffect(() => {
-        const userId = sessionStorage.getItem('userId');
-        GetProfile(userId)
-            .then((data) => {
-                console.log(data);
-                setUser(data.profile);
-                setUser((prevUser) => ({
-                    ...prevUser,
-                    name: data.userName.userName,
-                }));
-                setReviewScore(data.reviewInfo.review_score);
-            })
-            .catch((err) => console.log(err));
-    }, []);
-
     return (
         <div>
             <div className="bg-white flex justify-center space-x-[15%] py-16 mt-12">
@@ -58,7 +33,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
                 <div className="grid">
-                    <div className="flex space-x-3">{reviewScores(reviewScore)}</div>
+                    <div className="flex space-x-3">{reviewScores(user.review_score)}</div>
                     <p className="text-xl">자기소개</p>
                     <p className="text-xl">{user.introduction}</p>
                     <p className="text-xl">포트폴리오</p>
