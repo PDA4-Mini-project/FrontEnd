@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import CategoryTag from './CategoryTag';
+import CategoryTagButton from './CategoryTagButton';
 import FuncButton from './FuncButton';
 import { useState } from 'react';
 import FormButton from './FormButton';
@@ -18,6 +18,7 @@ export default function GardenCreateModla(props) {
     const selectCategory = (category) => {
         setGardenCategory(category);
     };
+
     // 방 생성 폼
     const {
         register,
@@ -29,6 +30,8 @@ export default function GardenCreateModla(props) {
         console.log(data);
     };
 
+    const categories = ['기술', '상담', '자기계발', '예술', '언어', '생활'];
+
     return (
         <div
             className="z-10 bg-black/30 w-screen h-screen fixed left-0 top-0 flex justify-center items-center"
@@ -37,12 +40,14 @@ export default function GardenCreateModla(props) {
             <div className="w-[648px] h-fit bg-white py-14 px-16 rounded-3xl grid justify-items-center gap-9">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex space-x-6">
-                        <CategoryTag category="기술" selectCategory={selectCategory} />
-                        <CategoryTag category="상담" selectCategory={selectCategory} />
-                        <CategoryTag category="자기계발" selectCategory={selectCategory} />
-                        <CategoryTag category="예술" selectCategory={selectCategory} />
-                        <CategoryTag category="언어" selectCategory={selectCategory} />
-                        <CategoryTag category="생활" selectCategory={selectCategory} />
+                        {categories.map((el, i) => (
+                            <CategoryTagButton
+                                category={el}
+                                key={i}
+                                selectCategory={selectCategory}
+                                gardenCategory={gardenCategory}
+                            />
+                        ))}
                     </div>
                     <div>
                         <p>정원 이름 *</p>
