@@ -5,6 +5,7 @@ import LoginPage from './routes/login/page';
 import ProfileLayout from './routes/profile/layout';
 import ProfilePage from './routes/profile/page';
 import GardenPage from './routes/garden/page';
+import GardenInsidePage from './routes/garden/inside/page';
 
 const router = createBrowserRouter([
     {
@@ -34,7 +35,10 @@ const router = createBrowserRouter([
     {
         path: '/garden',
         element: <GardenPage />,
-        children: [],
+    },
+    {
+        path: '/garden/inside',
+        element: <GardenInsidePage />,
     },
 ]);
 
