@@ -3,13 +3,13 @@ import FormButton from '../../components/FormButton';
 import NavBar from '../../components/Navbar';
 import { Login } from '../../lib/apis/users';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
 
 export default function LoginPage() {
     const common = 'rounded-full border-2 border-[#DBDAD3] w-full h-12 px-4';
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm();
     const onSubmit = (data) => {
@@ -23,6 +23,11 @@ export default function LoginPage() {
             .catch((err) => console.log(err));
     };
     const navigate = useNavigate();
+    const idInputRef = useRef(null);
+
+    useEffect(() => {
+        idInputRef.current?.focus();
+    }, []);
 
     return (
         <>
@@ -42,6 +47,7 @@ export default function LoginPage() {
                             {...register('id', { required: '아이디를 입력해주세요' })}
                             placeholder="아이디을 입력하세요"
                             className={common}
+                            ref={idInputRef}
                         />
                         <p className="text-red-500">{errors?.id?.message}</p>
                     </div>
