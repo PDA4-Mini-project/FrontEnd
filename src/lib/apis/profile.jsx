@@ -20,7 +20,8 @@ export async function EditProfileImage(url) {
     return res.data;
 }
 
-export async function EditPorfolioUrl(url) {
-    const res = await service.post('/portfolio', url);
-    return res.data;
+export async function EditPorfolioUrl(portfolio_url, user_id) {
+    const data = {portfolio_url: portfolio_url, user_id: user_id}
+    const res = await service.post('/portfolio', data);
+    return res;
 }

@@ -5,12 +5,14 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import NameEdit from '~/components/profileEdit/NameEdit';
 import IntroEdit from '../../components/profileEdit/IntroEdit';
+import PortfolioEdit from '../../components/profileEdit/PortfolioEdit';
 
 export default function ProfilePage() {
     const user = useSelector((state) => state.user.user);
     const common = 'w-12 h-12';
     const [nameEdit, setNameEdit] = useState(false);
     const [introEdit, setIntroEdit] = useState(false);
+    const [portEdit, setPortEdit] = useState(false);
 
     const reviewScores = (score) => {
         const scores = [];
@@ -59,8 +61,18 @@ export default function ProfilePage() {
                         )}
                     </div>
                     <div>
-                        <p className="text-xl mp-3">포트폴리오</p>
-                        <p className="text-xl">{user.portfolio_url}</p>
+                        <p className="text-xl mb-3">포트폴리오</p>
+                        {portEdit ? (
+                            <PortfolioEdit onHide={() => setPortEdit(false)} />
+                        ) : (
+                            <div className="flex items-center justify-between">
+                                <p className="text-xl">{user.portfolio_url}</p>
+                                <Pencil
+                                    className="my-auto hover:cursor-pointer w-5 h-5"
+                                    onClick={() => setPortEdit(true)}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
