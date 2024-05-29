@@ -42,22 +42,26 @@ export default function ProfilePage() {
                         </div>
                     )}
                 </div>
-                <div className="grid">
+                <div className="grid content-between">
                     <div className="flex space-x-3">{reviewScores(user.review_score)}</div>
-                    <p className="text-xl">자기소개</p>
-                    {introEdit ? (
-                        <IntroEdit onHide={() => setIntroEdit(false)} />
-                    ) : (
-                        <div className="flex items-center justify-between">
-                            <p className="text-xl">{user.introduction}</p>
-                            <Pencil
-                                className="my-auto hover:cursor-pointer w-5 h-5"
-                                onClick={() => setIntroEdit(true)}
-                            />
-                        </div>
-                    )}
-                    <p className="text-xl">포트폴리오</p>
-                    <p className="text-xl">{user.portfolio_url}</p>
+                    <div>
+                        <p className="text-xl mb-3">자기소개</p>
+                        {introEdit ? (
+                            <IntroEdit onHide={() => setIntroEdit(false)} />
+                        ) : (
+                            <div className="flex items-center justify-between">
+                                <p className="text-xl">{user.introduction}</p>
+                                <Pencil
+                                    className="my-auto hover:cursor-pointer w-5 h-5"
+                                    onClick={() => setIntroEdit(true)}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <div>
+                        <p className="text-xl mp-3">포트폴리오</p>
+                        <p className="text-xl">{user.portfolio_url}</p>
+                    </div>
                 </div>
             </div>
         </div>
