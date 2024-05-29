@@ -6,7 +6,7 @@ import ProfileLayout from './routes/profile/layout';
 import ProfilePage from './routes/profile/page';
 import GardenPage from './routes/garden/page';
 import GardenInsidePage from './routes/garden/inside/page';
-
+import WebRtcProvider from './components/webRtcProvider';
 const router = createBrowserRouter([
     {
         path: '/',
@@ -38,7 +38,11 @@ const router = createBrowserRouter([
     },
     {
         path: '/garden/inside',
-        element: <GardenInsidePage />,
+        element: (
+            <WebRtcProvider>
+                <GardenInsidePage />
+            </WebRtcProvider>
+        ),
     },
 ]);
 
