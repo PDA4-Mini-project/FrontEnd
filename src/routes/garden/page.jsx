@@ -3,6 +3,7 @@ import NavBar from '../../components/Navbar';
 import GardenCard from '../../components/GardenCard';
 import RoomInfoModal from '../../components/RoomInfoModal';
 import FuncButton from '../../components/FuncButton';
+import GardenCreateModal from '../../components/GardenCreateModal';
 
 export default function GardenPage() {
     // 나중에 정원 목록 불러오는 API와 연결해야함
@@ -64,14 +65,15 @@ export default function GardenPage() {
         <>
             <NavBar />
             <div>
-                <FuncButton text='정원 만들기' size='sm' color='green' func={() => setCreateModal(true)} />
-                <div className='grid grid-cols-2 justify-items-center px-14 gap-y-11'>
+                <FuncButton text="정원 만들기" size="sm" color="green" func={() => setCreateModal(true)} />
+                <div className="grid grid-cols-2 justify-items-center px-14 gap-y-11">
                     {roomList.map((el, i) => (
                         <div onClick={() => setRoomNum(i)} key={i}>
                             <GardenCard roomInfo={el} showModal={() => setInfoModal(true)} />
                         </div>
                     ))}
                 </div>
+                {createModal ? <GardenCreateModal onHide={() => setCreateModal(false)} /> : null}
                 {infoModal ? <RoomInfoModal onHide={() => setInfoModal(false)} roomInfo={roomList[roomNum]} /> : null}
             </div>
         </>
