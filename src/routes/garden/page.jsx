@@ -9,17 +9,16 @@ import { getGardenList } from '../../lib/apis/gardens';
 export default function GardenPage() {
     // 나중에 정원 목록 불러오는 API와 연결해야함
     const [roomList, setRoomList] = useState([]);
-    
-    ];
+
     const [infoModal, setInfoModal] = useState(false);
     const [roomNum, setRoomNum] = useState(0);
     const [createModal, setCreateModal] = useState(false);
 
     useEffect(() => {
         getGardenList().then((data) => {
-            console.log(data);
             if (Array.isArray(data)) {
-                setRoomList(data);
+                const sortedRooms = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setRoomList(sortedRooms);
             } else {
                 setRoomList([]);
             }
