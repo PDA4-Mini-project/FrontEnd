@@ -6,6 +6,7 @@ import { useState } from 'react';
 import NameEdit from '~/components/profileEdit/NameEdit';
 import IntroEdit from '../../components/profileEdit/IntroEdit';
 import PortfolioEdit from '../../components/profileEdit/PortfolioEdit';
+import TalentFlowers from '../../components/TalentFlowers';
 
 export default function ProfilePage() {
     const user = useSelector((state) => state.user.user);
@@ -76,6 +77,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
+            <TalentFlowers />
         </div>
     );
 }
