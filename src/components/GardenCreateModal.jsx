@@ -5,6 +5,8 @@ import { useState } from 'react';
 import FormButton from './FormButton';
 import { createGarden } from '../lib/apis/gardens';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { saveRoomId } from '~/store/gardenSlice';
 
 export default function GardenCreateModal(props) {
     const onHide = props.onHide;
@@ -30,12 +32,14 @@ export default function GardenCreateModal(props) {
     } = useForm();
     const selectedTime = watch('time');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const onSubmit = (data) => {
         const _id = sessionStorage.getItem('userId');
         const { time, title } = data;
         const category = gardenCategory;
 
         createGarden({ _id, time, title, category }).then((data) => {
+            dispatch(saveRoomId(data.roomId));
             navigate('/garden/inside');
         });
         onHide();
