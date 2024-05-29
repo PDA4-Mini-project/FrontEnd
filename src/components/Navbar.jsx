@@ -3,9 +3,20 @@ import logo from '../../public/Logo.svg';
 import NavButton from './NavButton';
 import { useEffect, useState } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
+import { Logout } from '../lib/apis/users';
 
 export default function NavBar() {
     const [userId, setUserId] = useState('');
+    const logout = () => {
+        Logout().then((data) => {
+            if (data.status === 200) {
+                sessionStorage.clear();
+                setUserId('');
+                navigate('/');
+            }
+        });
+    };
+
     useEffect(() => {
         setUserId(sessionStorage.getItem('userId'));
     }, []);
@@ -21,7 +32,14 @@ export default function NavBar() {
             <div>
                 {userId ? (
                     <div className="flex gap-3">
-                        <NavButton text="Logout" color="green" naviLink="/signup" />
+                        <div onClick={logout} className="flex items-center">
+                            <div
+                                className="bg-main-green text-white hover:bg-white hover:text-black w-20 rounded-md flex justify-center items-center hover:cursor-pointer"
+                                onClick={logout}
+                            >
+                                <span>Logout</span>
+                            </div>
+                        </div>
                         <PersonCircle
                             className="w-10 h-10 fill-current text-main-green hover:cursor-pointer"
                             onClick={() => navigate('/profile')}
