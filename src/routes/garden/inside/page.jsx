@@ -41,7 +41,15 @@ export default function GardenInsidePage() {
             </div>
             <div className="bg-black h-14 flex justify-between items-center px-4">
                 <div className="flex space-x-4">
-                    <div onClick={() => setMicOn(!micOn)} className="grid justify-items-center min-w-14">
+                    <div
+                        onClick={() => {
+                            if (localStream) {
+                                localStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+                                setMicOn(!micOn);
+                            }
+                        }}
+                        className="grid justify-items-center min-w-14"
+                    >
                         {micOn ? (
                             <>
                                 <MicFill className="fill-current text-white" />
@@ -54,7 +62,15 @@ export default function GardenInsidePage() {
                             </>
                         )}
                     </div>
-                    <div onClick={() => setCameraOn(!cameraOn)} className="grid justify-items-center">
+                    <div
+                        onClick={() => {
+                            if (localStream) {
+                                localStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+                                setCameraOn(!cameraOn);
+                            }
+                        }}
+                        className="grid justify-items-center"
+                    >
                         {cameraOn ? (
                             <>
                                 <CameraVideoFill className="fill-current text-white" />
