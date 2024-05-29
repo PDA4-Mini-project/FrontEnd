@@ -7,6 +7,7 @@ import NameEdit from '~/components/profileEdit/NameEdit';
 import IntroEdit from '../../components/profileEdit/IntroEdit';
 import PortfolioEdit from '../../components/profileEdit/PortfolioEdit';
 import TalentFlowers from '../../components/TalentFlowers';
+import sample from '/sample.png';
 
 export default function ProfilePage() {
     const user = useSelector((state) => state.user.user);
@@ -34,7 +35,7 @@ export default function ProfilePage() {
         <div>
             <div className="bg-white flex justify-center space-x-[12%] py-16 mt-12">
                 <div>
-                    <img className="w-52 h-52 rounded-full" src={user.image_url} />
+                    <img className="w-52 h-52 rounded-full" src={user.image_url != 'null' ? user.image_url : sample} />
                     {nameEdit ? (
                         // <button onClick={() => setNameEdit(false)}>수정완료</button>
                         <NameEdit onHide={() => setNameEdit(false)} />

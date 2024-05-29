@@ -10,6 +10,7 @@ const initialState = {
         userName: '',
         review_score: '',
     },
+    userTheme: [],
 };
 
 const userSlice = createSlice({
@@ -46,9 +47,21 @@ const userSlice = createSlice({
             const newImageUrl = action.payload;
             state.user.image_url = newImageUrl;
         },
+        saveUserTheme: (state, action) => {
+            const newUserTheme = action.payload;
+            state.userTheme = newUserTheme;
+        },
     },
 });
 
 export default userSlice.reducer;
-export const { reset, saveUserName, saveProfile, saveReviewScore, saveIntroduction, savePortfolio, saveImageUrl } =
-    userSlice.actions;
+export const {
+    reset,
+    saveUserName,
+    saveProfile,
+    saveReviewScore,
+    saveIntroduction,
+    savePortfolio,
+    saveImageUrl,
+    saveUserTheme,
+} = userSlice.actions;
