@@ -28,26 +28,29 @@ import s2 from '/flowers/s2.png';
 import s3 from '/flowers/s3.png';
 import s4 from '/flowers/s4.png';
 import s5 from '/flowers/s5.png';
+import { useSelector } from 'react-redux';
 
 export default function TalentFlowers() {
-    const flowers = [
-        {
-            user_id: 'ha',
-            theme_name: '기술',
-            exp: 0,
-            level: 5,
-            createdAt: '2024-05-29T12:10:00.000Z',
-            updatedAt: '2024-05-29T12:10:00.000Z',
-        },
-        {
-            user_id: 'ha',
-            theme_name: '생활',
-            exp: 0,
-            level: 1,
-            createdAt: '2024-05-29T12:10:00.000Z',
-            updatedAt: '2024-05-29T12:10:00.000Z',
-        },
-    ];
+    const flowers = useSelector((state) => state.userTheme);
+    // || [
+    //     {
+    //         user_id: 'ha',
+    //         theme_name: '기술',
+    //         exp: 0,
+    //         level: 5,
+    //         createdAt: '2024-05-29T12:10:00.000Z',
+    //         updatedAt: '2024-05-29T12:10:00.000Z',
+    //     },
+    //     {
+    //         user_id: 'ha',
+    //         theme_name: '생활',
+    //         exp: 0,
+    //         level: 1,
+    //         createdAt: '2024-05-29T12:10:00.000Z',
+    //         updatedAt: '2024-05-29T12:10:00.000Z',
+    //     },
+    // ];
+
     const flowerName = {
         기술: '튤립',
         상담: '라벤더',
@@ -102,7 +105,7 @@ export default function TalentFlowers() {
     return (
         <div className="bg-white mt-12 p-12 grid gap-12">
             <p className="font-bold text-xl text-center">나의 재능꽃</p>
-            {flowers.map((el, i) => (
+            {flowers?.map((el, i) => (
                 <div className="flex justify-center space-x-12" key={i}>
                     <img className="w-36 h-56 object-cover" src={images[`${alphabet[el.theme_name]}${el.level}`]} />
                     <div className="w-full flex-col content-end space-y-2">
@@ -114,6 +117,11 @@ export default function TalentFlowers() {
                     </div>
                 </div>
             ))}
+            {!flowers && (
+                <div>
+                    <img />
+                </div>
+            )}
         </div>
     );
 }

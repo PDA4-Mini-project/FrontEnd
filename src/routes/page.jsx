@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import NavBar from '../components/Navbar';
 import { GetProfile } from '../lib/apis/profile';
 import { useDispatch } from 'react-redux';
-import { saveProfile, saveReviewScore, saveUserName } from '../store/userSlice';
+import { saveProfile, saveReviewScore, saveUserName, saveUserTheme } from '../store/userSlice';
 
 export default function MainPage() {
     const dispatch = useDispatch();
@@ -19,6 +19,7 @@ export default function MainPage() {
                 dispatch(saveUserName(data.userName.userName));
                 dispatch(saveProfile(data.profile));
                 dispatch(saveReviewScore(data.reviewData.average_score));
+                dispatch(saveUserTheme(data.userThemes));
             })
             .catch((err) => console.log(err));
     }, []);
