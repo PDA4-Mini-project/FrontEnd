@@ -34,8 +34,21 @@ const userSlice = createSlice({
             const newReviewScore = action.payload;
             state.user.review_score = newReviewScore;
         },
+        saveIntroduction: (state, action) => {
+            const newIntroduction = action.payload;
+            state.user.introduction = newIntroduction;
+        },
+        savePortfolio: (state, action) => {
+            const newPortfolio = action.payload;
+            state.user.portfolio_url = newPortfolio;
+        },
+        saveImageUrl: (state, action) => {
+            const newImageUrl = action.payload;
+            state.user.image_url = newImageUrl;
+        },
     },
 });
 
 export default userSlice.reducer;
-export const { reset, saveUserName, saveProfile, saveReviewScore } = userSlice.actions;
+export const { reset, saveUserName, saveProfile, saveReviewScore, saveIntroduction, savePortfolio, saveImageUrl } =
+    userSlice.actions;
