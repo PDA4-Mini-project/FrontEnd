@@ -4,11 +4,13 @@ import color from '~/public/컬러꽃.png';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import NameEdit from '~/components/profileEdit/NameEdit';
+import IntroEdit from '../../components/profileEdit/IntroEdit';
 
 export default function ProfilePage() {
     const user = useSelector((state) => state.user.user);
     const common = 'w-12 h-12';
     const [nameEdit, setNameEdit] = useState(false);
+    const [introEdit, setIntroEdit] = useState(false);
 
     const reviewScores = (score) => {
         const scores = [];
@@ -27,7 +29,7 @@ export default function ProfilePage() {
 
     return (
         <div>
-            <div className="bg-white flex justify-center space-x-[15%] py-16 mt-12">
+            <div className="bg-white flex justify-center space-x-[12%] py-16 mt-12">
                 <div>
                     <img className="w-52 h-52 rounded-full" src={user.image_url} />
                     {nameEdit ? (
@@ -43,7 +45,17 @@ export default function ProfilePage() {
                 <div className="grid">
                     <div className="flex space-x-3">{reviewScores(user.review_score)}</div>
                     <p className="text-xl">자기소개</p>
-                    <p className="text-xl">{user.introduction}</p>
+                    {introEdit ? (
+                        <IntroEdit onHide={() => setIntroEdit(false)} />
+                    ) : (
+                        <div className="flex items-center justify-between">
+                            <p className="text-xl">{user.introduction}</p>
+                            <Pencil
+                                className="my-auto hover:cursor-pointer w-5 h-5"
+                                onClick={() => setIntroEdit(true)}
+                            />
+                        </div>
+                    )}
                     <p className="text-xl">포트폴리오</p>
                     <p className="text-xl">{user.portfolio_url}</p>
                 </div>
