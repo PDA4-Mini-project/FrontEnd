@@ -7,6 +7,8 @@ import adapter from 'webrtc-adapter';
 import { Timer } from '../../../components/Timer';
 import FuncButton from '../../../components/FuncButton';
 import ReviewModal from '../../../components/ReviewModal';
+import { useNavigate } from 'react-router-dom';
+import { Toast } from '../../../components/Toast';
 
 export default function GardenInsidePage() {
     const [micOn, setMicOn] = useState(true);
@@ -23,6 +25,7 @@ export default function GardenInsidePage() {
     const title = useSelector((state) => state.garden.title);
     const [ready, setReady] = useState(false);
     const [showReview, setShowReview] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         socket.current = io('http://localhost:3000', {
@@ -122,9 +125,15 @@ export default function GardenInsidePage() {
         // 여기에 서버에 준비했다는 메세지 보내는 로직 추가해야함
     };
 
-    const cancleReady = () => {
+    const cancelReady = () => {
         setReady(false);
         // 여기에 서버에 준비 취소했다는 메세지 보내는 로직 추가해야함
+    };
+
+    const cancelReview = () => {
+        setShowReview(false);
+        navigate('/garden');
+        Toast.fire('리뷰를 남기지않았어요', '', 'error');
     };
 
     return (
@@ -141,7 +150,7 @@ export default function GardenInsidePage() {
                     <div className="bg-white rounded-3xl flex flex-col items-center justify-start">
                         <p className="font-bold text-3xl my-9">{title}</p>
                         {ready ? (
-                            <FuncButton text="취소하기" color="green" func={cancleReady} />
+                            <FuncButton text="취소하기" color="green" func={cancelReady} />
                         ) : (
                             <FuncButton text="준비하기" color="green" func={getReady} />
                         )}
@@ -196,7 +205,7 @@ export default function GardenInsidePage() {
                 <Timer time={1} onTimeEnd={() => setShowReview(true)} />
                 <button className="bg-red-600 w-14 h-8 rounded-xl text-white">나가기</button>
             </div>
-            {showReview && <ReviewModal onHide={() => setShowReview(false)} />}
+            {showReview && <ReviewModal onCancel={cancelReview} onHide={() => setShowReview(false)} />}
         </div>
     );
 }
