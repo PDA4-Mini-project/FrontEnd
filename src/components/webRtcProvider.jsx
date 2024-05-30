@@ -39,7 +39,9 @@ export const WebRtcContext = createContext({
     remoteVideo: undefined,
     ready: false,
     isHost: true,
+    canStart: false,
     handleReady: () => {},
+    handleStart: () => {},
 });
 
 const Video = forwardRef((props, ref) => {
@@ -58,6 +60,7 @@ export default function WebRtcProvider({ children }) {
     const navigate = useNavigate();
     const [ready, setReady] = useState(false);
     const [isHost, setIsHost] = useState(true);
+    const [canStart, setCanStart] = useState(false);
     // 미디어 생성
     // 소켓 초기화
     // peerRef초기화
@@ -68,6 +71,11 @@ export default function WebRtcProvider({ children }) {
 
     const handleReady = () => {
         setReady(!ready);
+        socketRef.current.emit('readyStateChanged', { roomId: storedRoomId, userId: storedUserId, ready: ready });
+    };
+
+    const handleStart = () => {
+        console.log('handle');
     };
 
     const toggleMuteAudio = () => {
@@ -146,7 +154,12 @@ export default function WebRtcProvider({ children }) {
                 createOffer();
             }
         });
-
+        socketRef.current.on('readyStateChanged', ({ userId, ready }) => {
+            console.log(`User ${userId} changed ready state to ${ready}`);
+            if (userId === storedUserId) {
+                setReady(!ready);
+            }
+        });
         return () => {
             socketRef.current.off('offer', (sdp) => {
                 console.log('recv Offer');
@@ -172,6 +185,7 @@ export default function WebRtcProvider({ children }) {
                 console.log('candidate', candidate);
                 peerRef.current.addIceCandidate(candidate);
             });
+            socketRef.current.off('readyStateChanged');
             socketRef.current.disconnect();
         };
     }, []);
@@ -314,6 +328,8 @@ export default function WebRtcProvider({ children }) {
                 ready,
                 handleReady,
                 isHost,
+                canStart,
+                handleStart,
             }}
         >
             {children}
