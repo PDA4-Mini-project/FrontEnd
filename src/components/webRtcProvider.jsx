@@ -1,6 +1,10 @@
-import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react';
-import { Socket, io } from 'socket.io-client';
+import { createContext, useEffect, useRef, forwardRef, useCallback, useState } from 'react';
+import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Toast } from './Toast';
+import { startGarden } from '../lib/apis/gardens';
+
 /**
  * [first user # 1]
  * 1. roomId 받아오기
@@ -34,6 +38,11 @@ export const WebRtcContext = createContext({
     toggleHideVideo: () => {},
     MyVideo: undefined,
     remoteVideo: undefined,
+    ready: false,
+    isHost: true,
+    canStart: false,
+    handleReady: () => {},
+    handleStart: () => {},
 });
 
 const Video = forwardRef((props, ref) => {
@@ -49,10 +58,35 @@ export default function WebRtcProvider({ children }) {
     const peerRef = useRef();
     const storedRoomId = useSelector((state) => state.garden.roomId);
     const storedUserId = useSelector((state) => state.user.user.userId);
+    const navigate = useNavigate();
+    const [ready, setReady] = useState(false);
+    const [isHost, setIsHost] = useState(true);
+    const [canStart, setCanStart] = useState(false);
+    // 미디어 생성
+    // 소켓 초기화
+    // peerRef초기화
+    // 소켓이벤트 등록
+    // peerRef이벤트 등록
+    // 마지막 addTrack
+    // joinRoom
 
-    const emitSocket = (event, args) => {
-        if (socketRef.current) {
-            socketRef.current.emit(event, args);
+    const handleReady = () => {
+        setReady(!ready);
+        socketRef.current.emit('readyStateChanged', { roomId: storedRoomId, userId: storedUserId, ready: ready });
+    };
+
+    const handleStart = async () => {
+        try {
+            const data = await startGarden({ storedRoomId });
+            console.log('Garden started successfully:', data);
+            setCanStart(true);
+            socketRef.current.emit('canStartStateChanged', { roomId: storedRoomId, canStart: true });
+        } catch (error) {
+            console.error('Failed to start the garden:', error.message);
+            Toast.fire({
+                icon: 'error',
+                title: error.message,
+            });
         }
     };
     const toggleMuteAudio = () => {
@@ -77,14 +111,6 @@ export default function WebRtcProvider({ children }) {
         }
     };
 
-    // 미디어 생성
-    // 소켓 초기화
-    // peerRef초기화
-    // 소켓이벤트 등록
-    // peerRef이벤트 등록
-    // 마지막 addTrack
-    // joinRoom
-
     const initSocket = useCallback(() => {
         socketRef.current = io({
             reconnection: true,
@@ -95,8 +121,15 @@ export default function WebRtcProvider({ children }) {
             console.log('socket connected');
         });
         // offer signal
-        socketRef.current.on('offer', (sdp) => {
+        socketRef.current.on('offer', ({ host_id, offer: sdp }) => {
             console.log('recv Offer');
+            if (host_id === storedUserId) {
+                console.log('호스트입니다');
+                setIsHost(true);
+            } else {
+                console.log('호스트 아님');
+                setIsHost(false);
+            }
             createAnswer(sdp);
         });
 
@@ -124,11 +157,27 @@ export default function WebRtcProvider({ children }) {
 
         socketRef.current.on('userJoined', ({ userId, numClients }) => {
             console.log('userJoined', userId, numClients);
+            // if (host_id === storedUserId) {
+            //     console.log('호스트입니다');
+            //     setIsHost(isHost);
+            // }
             if (userId) {
                 createOffer();
             }
         });
+        socketRef.current.on('readyStateChanged', ({ userId, ready }) => {
+            console.log(`User ${userId} changed ready state to ${ready}`);
+            if (userId === storedUserId) {
+                setReady(!ready);
+            }
+        });
 
+        socketRef.current.on('canStartStateChanged', ({ userId, canStart }) => {
+            console.log(`User ${userId} changed canStart state to ${canStart}`);
+            if (userId !== storedUserId) {
+                setCanStart(canStart);
+            }
+        });
         return () => {
             socketRef.current.off('offer', (sdp) => {
                 console.log('recv Offer');
@@ -154,6 +203,8 @@ export default function WebRtcProvider({ children }) {
                 console.log('candidate', candidate);
                 peerRef.current.addIceCandidate(candidate);
             });
+            socketRef.current.off('readyStateChanged');
+            socketRef.current.off('canStartStateChanged');
             socketRef.current.disconnect();
         };
     }, []);
@@ -176,7 +227,7 @@ export default function WebRtcProvider({ children }) {
             peerRef.current.setLocalDescription(sdp);
             console.log('sent the offer');
             // offer 전달
-            socketRef.current.emit('offer', { roomId: storedRoomId, offer: sdp });
+            socketRef.current.emit('offer', { roomId: storedRoomId, userId: storedUserId, offer: sdp });
         } catch (e) {
             console.error(e);
         }
@@ -258,6 +309,11 @@ export default function WebRtcProvider({ children }) {
                 // userId: socketRef.current.id,
                 userId: storedUserId,
             });
+
+            socketRef.current.on('roomFull', () => {
+                Toast.fire('이미 진행 중인 정원입니다. 다른 정원을 이용해주세요', '', 'error');
+                navigate('/garden');
+            });
         }
         init();
 
@@ -285,10 +341,14 @@ export default function WebRtcProvider({ children }) {
         <WebRtcContext.Provider
             value={{
                 toggleMuteAudio,
-                emitSocket,
                 toggleHideVideo,
                 MyVideo,
                 RemoteVideo,
+                ready,
+                handleReady,
+                isHost,
+                canStart,
+                handleStart,
             }}
         >
             {children}
