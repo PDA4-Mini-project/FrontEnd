@@ -46,7 +46,6 @@ export default function WebRtcProvider({ children }) {
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
     const peerRef = useRef();
-
     // 미디어 생성
     // 소켓 초기화
     // peerRef초기화
@@ -237,6 +236,7 @@ export default function WebRtcProvider({ children }) {
                 peerRef.current.close();
             }
         };
+        // }
         // stream설정
     }, [initPeer, initSocket]);
 
