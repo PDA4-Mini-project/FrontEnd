@@ -3,6 +3,7 @@ import FuncButton from './FuncButton';
 import { useDispatch } from 'react-redux';
 import { saveRoomId } from '~/store/gardenSlice';
 import { useNavigate } from 'react-router-dom';
+import { saveId, saveRoomTime, saveRoomTitle } from '../store/gardenSlice';
 
 export default function RoomInfoModal(props) {
     const onHide = props.onHide;
@@ -10,6 +11,9 @@ export default function RoomInfoModal(props) {
     const navigate = useNavigate();
     const joinRoom = () => {
         dispatch(saveRoomId(roomInfo.roomId));
+        dispatch(saveRoomTime(Number(roomInfo.time)));
+        dispatch(saveRoomTitle(roomInfo.title));
+        dispatch(saveId(roomInfo._id));
         navigate('/garden/inside');
     };
     const roomInfo = props.roomInfo;

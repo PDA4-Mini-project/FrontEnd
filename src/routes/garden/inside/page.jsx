@@ -1,268 +1,211 @@
-import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react';
-import { io } from 'socket.io-client';
+import NavBar from '~/components/Navbar';
+import { MicFill, MicMuteFill, CameraVideoFill, CameraVideoOffFill } from 'react-bootstrap-icons';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-/**
- * [first user # 1]
- * 1. roomId 받아오기
- * 2. set userMedia to myVideo
- * 3. <server:joinRoom> (roomId)
- */
+import { io } from 'socket.io-client';
+import adapter from 'webrtc-adapter';
+import { Timer } from '../../../components/Timer';
+import FuncButton from '../../../components/FuncButton';
+import ReviewModal from '../../../components/ReviewModal';
+import { useNavigate } from 'react-router-dom';
+import { Toast } from '../../../components/Toast';
 
-/**
- * [second user #2]
- * 1. roomId받아오기
- * 2. set UserMedia to myVideo
- * 3. <server:joinRoom> (roomId)
- * 4. (#1 <client:userJoined>)
- */
-
-/**
- * [nth user #n]
- * 1. roomId받아오기
- * 2. set UserMedia to myVideo
- * 3. <server:joinRoom> (roomId)
- * 4. (#n-1 <client:userJoined>)
- */
-
-/**
- * offer -> answer
- * candidate 교환 (양방향): userId와 candidate를 함께.
- */
-
-export const WebRtcContext = createContext({
-    toggleMuteAudio: () => {},
-    toggleHideVideo: () => {},
-    MyVideo: undefined,
-    remoteVideo: undefined,
-});
-
-const Video = forwardRef((props, ref) => {
-    return <video ref={ref} {...props} />;
-});
-
-Video.displayName = 'Video';
-
-export default function WebRtcProvider({ children }) {
-    const socketRef = useRef(); // socket
-    const myVideoRef = useRef();
-    const remoteVideoRef = useRef();
-    const peerRef = useRef();
-    const storedRoomId = useSelector((state) => state.garden.roomId);
-    const storedUserId = useSelector((state) => state.user.user.userId);
-    // 미디어 생성
-    // 소켓 초기화
-    // peerRef초기화
-    // 소켓이벤트 등록
-    // peerRef이벤트 등록
-    // 마지막 addTrack
-    // joinRoom
-
-    const initSocket = useCallback(() => {
-        socketRef.current = io({
-            reconnection: true,
-            withCredentials: true,
-        }); // proxy 설정된 (signal 서버)
-
-        socketRef.current.on('connect', () => {
-            console.log('socket connected');
-        });
-        // offer signal
-        socketRef.current.on('offer', (sdp) => {
-            console.log('recv Offer');
-            createAnswer(sdp);
-        });
-
-        // answer를 전달받을 PeerA만 해당됩니다.
-        // answer를 전달받아 PeerA의 RemoteDescription에 등록
-        socketRef.current.on('answer', (sdp) => {
-            console.log('recv Answer', sdp);
-            if (!peerRef.current) {
-                return;
-            }
-            peerRef.current.setRemoteDescription(sdp);
-        });
-        // 서로의 candidate를 전달받아 등록
-        socketRef.current.on('candidate', ({ candidate }) => {
-            console.log('candidate', candidate);
-            console.log('HellllooWorld');
-            if (!peerRef.current) {
-                return;
-            }
-            peerRef.current.addIceCandidate(candidate);
-        });
-        socketRef.current.on('disconnect', () => {
-            console.log('Socket disconnected');
-        });
-
-        socketRef.current.on('userJoined', ({ userId, numClients }) => {
-            console.log('userJoined', userId, numClients);
-            if (userId) {
-                createOffer();
-            }
-        });
-
-        return () => {
-            socketRef.current.off('offer', (sdp) => {
-                console.log('recv Offer');
-                createAnswer(sdp);
-            });
-            socketRef.current.off('answer', (sdp) => {
-                console.log('recv Answer', sdp);
-                if (!peerRef.current) {
-                    return;
-                }
-                peerRef.current.setRemoteDescription(sdp);
-            });
-            socketRef.current.off('userJoined', ({ userId, numClients }) => {
-                console.log('userJoined', userId, numClients);
-                if (userId) {
-                    createOffer();
-                }
-            });
-            socketRef.current.off('candidate', ({ roomId, candidate }) => {
-                if (!peerRef.current) {
-                    return;
-                }
-                console.log('candidate', candidate);
-                peerRef.current.addIceCandidate(candidate);
-            });
-            socketRef.current.disconnect();
-        };
-    }, []);
-
-    const initPeer = useCallback(() => {
-        const configuration = {
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }], // 예제 STUN 서버
-        };
-        peerRef.current = new RTCPeerConnection(configuration);
-    }, []);
-
-    const createOffer = async () => {
-        if (!(peerRef.current && socketRef.current)) {
-            return;
-        }
-        try {
-            // offer 생성
-            const sdp = await peerRef.current.createOffer();
-            // 자신의 sdp로 LocalDescription 설정
-            peerRef.current.setLocalDescription(sdp);
-            console.log('sent the offer');
-            // offer 전달
-            socketRef.current.emit('offer', { roomId: storedRoomId, offer: sdp });
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const createAnswer = async (sdp) => {
-        // sdp : PeerA에게서 전달받은 offer
-        if (!(peerRef.current && socketRef.current)) {
-            return;
-        }
-
-        try {
-            // PeerA가 전달해준 offer를 RemoteDescription에 등록해 줍시다.
-            peerRef.current.setRemoteDescription(sdp);
-
-            // answer생성해주고
-            const answer = await peerRef.current.createAnswer();
-
-            // answer를 LocalDescription에 등록해 줍니다. (PeerB 기준)
-            peerRef.current.setLocalDescription(answer);
-            console.log('sent the answer', answer);
-            socketRef.current.emit('answer', { roomId: storedRoomId, answer: answer });
-        } catch (e) {
-            console.error(e);
-        }
-    };
+export default function GardenInsidePage() {
+    const [micOn, setMicOn] = useState(true);
+    const [cameraOn, setCameraOn] = useState(true);
+    const roomId = useSelector((state) => state.garden.roomId);
+    const userId = sessionStorage.getItem('userId');
+    const localVideoRef = useRef(null);
+    const remoteVideoRef = useRef(null);
+    const [localStream, setLocalStream] = useState(null);
+    const [remoteStream, setRemoteStream] = useState(null);
+    const [peerConnection, setPeerConnection] = useState(null);
+    const socket = useRef(null);
+    const time = useSelector((state) => state.garden.time);
+    const title = useSelector((state) => state.garden.title);
+    const [ready, setReady] = useState(false);
+    const [showReview, setShowReview] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        async function init() {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true,
-            });
+        socket.current = io('http://localhost:3000', {
+            cors: {
+                origin: '*',
+            },
+        });
 
-            if (myVideoRef.current) {
-                myVideoRef.current.srcObject = stream;
-            }
+        socket.current.on('connect', () => {
+            // 방에 참여
+            socket.current.emit('joinRoom', { roomId, userId });
+        });
 
-            initPeer();
-            initSocket();
-
-            // peerRef이벤트 등록
-            // iceCandidate 이벤트
-            peerRef.current.onicecandidate = (e) => {
-                if (e.candidate) {
-                    if (!socketRef.current) {
-                        return;
-                    }
-                    console.log('recv candidate', e.candidate);
-                    console.log(socketRef.current);
-                    socketRef.current.emit('candidate', {
-                        roomId: storedRoomId,
-                        candidate: e.candidate,
-                    });
+        navigator.mediaDevices
+            .getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+                setLocalStream(stream);
+                if (localVideoRef.current) {
+                    localVideoRef.current.srcObject = stream;
                 }
-            };
-            // 구 addStream 현 track 이벤트
-            peerRef.current.ontrack = (e) => {
-                console.log('ontrack', e);
-                if (remoteVideoRef.current) {
-                    remoteVideoRef.current.srcObject = e.streams[0];
-                }
-            };
-
-            // 스트림을 peerConnection에 등록
-            stream.getTracks().forEach((track) => {
-                console.log('addTrack', track);
-                if (!peerRef.current) {
-                    console.log('연결 미완료');
-                    return;
-                }
-                peerRef.current.addTrack(track, stream);
+                startPeerConnection(socket.current, stream);
+            })
+            .catch((error) => {
+                console.error('Error accessing media devices.', error);
             });
-
-            // 마운트시 해당 방의 roomName을 서버에 전달
-            socketRef.current.emit('joinRoom', {
-                roomId: storedRoomId,
-                // userId: undefined,
-                // userId: socketRef.current.id,
-                userId: storedUserId,
-            });
-        }
-        init();
 
         return () => {
-            // 언마운트시 socket disconnect
-            if (socketRef.current && socketRef.current.connected) {
-                socketRef.current.disconnect();
-            }
-            if (peerRef.current) {
-                peerRef.current.close();
+            socket.current.disconnect();
+        };
+    }, [roomId, userId]);
+
+    useEffect(() => {
+        if (!socket.current || !peerConnection) return;
+
+        const handleOffer = async (offer) => {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.current.emit('answer', { roomId, answer });
+        };
+
+        const handleAnswer = async (answer) => {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        };
+
+        const handleCandidate = async (candidate) => {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        };
+
+        socket.current.on('offer', handleOffer);
+        socket.current.on('answer', handleAnswer);
+        socket.current.on('candidate', handleCandidate);
+
+        return () => {
+            socket.current.off('offer', handleOffer);
+            socket.current.off('answer', handleAnswer);
+            socket.current.off('candidate', handleCandidate);
+        };
+    }, [peerConnection, roomId]);
+
+    const startPeerConnection = (socketInstance, stream) => {
+        const configuration = {
+            iceServers: [
+                {
+                    urls: 'stun:stun.l.google.com:19302',
+                },
+            ],
+        };
+        const pc = new RTCPeerConnection(configuration);
+        setPeerConnection(pc);
+
+        pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                socketInstance.emit('candidate', { roomId, candidate: event.candidate });
             }
         };
-        // }
-        // stream설정
-    }, [initPeer, initSocket, storedRoomId, storedUserId]);
 
-    const MyVideo = useCallback((props) => {
-        return <Video ref={myVideoRef} {...props} />;
-    }, []);
-    const RemoteVideo = useCallback((props) => {
-        return <Video ref={remoteVideoRef} {...props} />;
-    }, []);
+        pc.ontrack = (event) => {
+            setRemoteStream(event.streams[0]);
+            if (remoteVideoRef.current) {
+                remoteVideoRef.current.srcObject = event.streams[0];
+            }
+        };
+
+        stream.getTracks().forEach((track) => {
+            pc.addTrack(track, stream);
+        });
+
+        // 새로운 참가자에게 offer를 보냄
+        if (socketInstance) {
+            socketInstance.emit('joinRoom', { roomId, userId });
+        }
+    };
+
+    const getReady = () => {
+        setReady(true);
+        // 여기에 서버에 준비했다는 메세지 보내는 로직 추가해야함
+    };
+
+    const cancelReady = () => {
+        setReady(false);
+        // 여기에 서버에 준비 취소했다는 메세지 보내는 로직 추가해야함
+    };
+
+    const cancelReview = () => {
+        setShowReview(false);
+        navigate('/garden');
+        Toast.fire('리뷰를 남기지않았어요', '', 'error');
+    };
 
     return (
-        <WebRtcContext.Provider
-            value={{
-                // toggleMuteAudio,
-                // toggleHideVideo,
-                MyVideo,
-                RemoteVideo,
-            }}
-        >
-            {children}
-        </WebRtcContext.Provider>
+        <div className="flex flex-col h-dvh">
+            <NavBar />
+            <div className="bg-main-green w-full grid grid-cols-3 p-5 grow gap-5">
+                <div className="bg-white col-span-2">
+                    <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full" />
+                </div>
+                <div className="grid gap-5">
+                    <div className="bg-white">
+                        <video ref={localVideoRef} autoPlay playsInline className="w-full h-full" />
+                    </div>
+                    <div className="bg-white rounded-3xl flex flex-col items-center justify-start">
+                        <p className="font-bold text-3xl my-9">{title}</p>
+                        {ready ? (
+                            <FuncButton text="취소하기" color="green" func={cancelReady} />
+                        ) : (
+                            <FuncButton text="준비하기" color="green" func={getReady} />
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div className="bg-black h-14 flex justify-between items-center px-4">
+                <div className="flex space-x-4">
+                    <div
+                        onClick={() => {
+                            if (localStream) {
+                                localStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+                                setMicOn(!micOn);
+                            }
+                        }}
+                        className="grid justify-items-center min-w-14"
+                    >
+                        {micOn ? (
+                            <>
+                                <MicFill className="fill-current text-white" />
+                                <p className="text-white text-sm">Mute</p>
+                            </>
+                        ) : (
+                            <>
+                                <MicMuteFill className="fill-current text-white" />
+                                <p className="text-white text-sm">Unmute</p>
+                            </>
+                        )}
+                    </div>
+                    <div
+                        onClick={() => {
+                            if (localStream) {
+                                localStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+                                setCameraOn(!cameraOn);
+                            }
+                        }}
+                        className="grid justify-items-center"
+                    >
+                        {cameraOn ? (
+                            <>
+                                <CameraVideoFill className="fill-current text-white" />
+                                <p className="text-white text-sm">Stop Video</p>
+                            </>
+                        ) : (
+                            <>
+                                <CameraVideoOffFill className="fill-current text-white" />
+                                <p className="text-white text-sm">Start Video</p>
+                            </>
+                        )}
+                    </div>
+                </div>
+                <Timer time={1} onTimeEnd={() => setShowReview(true)} />
+                <button className="bg-red-600 w-14 h-8 rounded-xl text-white">나가기</button>
+            </div>
+            {showReview && <ReviewModal onCancel={cancelReview} onHide={() => setShowReview(false)} />}
+        </div>
     );
 }
