@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 
-export const Timer = memo(({ time }) => {
+export const Timer = memo(({ time, onTimeEnd }) => {
     // time 분
     const playTime = time * 60 * 1000;
     // 1분
@@ -25,6 +25,7 @@ export const Timer = memo(({ time }) => {
                 if (prevTime <= INTERVAL) {
                     clearInterval(timer);
                     console.log('시간 끝');
+                    onTimeEnd();
                     return 0;
                 }
                 return prevTime - INTERVAL;

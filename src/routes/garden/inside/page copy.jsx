@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import adapter from 'webrtc-adapter';
+import { Timer } from '../../../components/Timer';
+import FuncButton from '../../../components/FuncButton';
 
 export default function GardenInsidePage() {
     const [micOn, setMicOn] = useState(true);
@@ -16,6 +18,9 @@ export default function GardenInsidePage() {
     const [remoteStream, setRemoteStream] = useState(null);
     const [peerConnection, setPeerConnection] = useState(null);
     const socket = useRef(null);
+    const time = useSelector((state) => state.garden.time);
+    const title = useSelector((state) => state.garden.title);
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
         socket.current = io('http://localhost:3000', {
@@ -110,6 +115,16 @@ export default function GardenInsidePage() {
         }
     };
 
+    const getReady = () => {
+        setReady(true);
+        // 여기에 서버에 준비했다는 메세지 보내는 로직 추가해야함
+    };
+
+    const cancleReady = () => {
+        setReady(false);
+        // 여기에 서버에 준비 취소했다는 메세지 보내는 로직 추가해야함
+    };
+
     return (
         <div className="flex flex-col h-dvh">
             <NavBar />
@@ -121,7 +136,14 @@ export default function GardenInsidePage() {
                     <div className="bg-white">
                         <video ref={localVideoRef} autoPlay playsInline className="w-full h-full" />
                     </div>
-                    <div className="bg-white rounded-3xl">여기 채팅 보여줄 자리</div>
+                    <div className="bg-white rounded-3xl flex flex-col items-center justify-start">
+                        <p className="font-bold text-3xl my-9">{title}</p>
+                        {ready ? (
+                            <FuncButton text="취소하기" color="green" func={cancleReady} />
+                        ) : (
+                            <FuncButton text="준비하기" color="green" func={getReady} />
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="bg-black h-14 flex justify-between items-center px-4">
@@ -169,6 +191,7 @@ export default function GardenInsidePage() {
                         )}
                     </div>
                 </div>
+                <Timer time={time} />
                 <button className="bg-red-600 w-14 h-8 rounded-xl text-white">나가기</button>
             </div>
         </div>
