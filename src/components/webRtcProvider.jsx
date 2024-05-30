@@ -1,5 +1,5 @@
 import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react';
-import { io } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 /**
  * [first user # 1]
@@ -50,6 +50,11 @@ export default function WebRtcProvider({ children }) {
     const storedRoomId = useSelector((state) => state.garden.roomId);
     const storedUserId = useSelector((state) => state.user.user.userId);
 
+    const emitSocket = (event, args) => {
+        if (socketRef.current) {
+            socketRef.current.emit(event, args);
+        }
+    };
     const toggleMuteAudio = () => {
         const stream = myVideoRef.current?.srcObject;
         if (stream && stream.getAudioTracks().length > 0) {
@@ -280,6 +285,7 @@ export default function WebRtcProvider({ children }) {
         <WebRtcContext.Provider
             value={{
                 toggleMuteAudio,
+                emitSocket,
                 toggleHideVideo,
                 MyVideo,
                 RemoteVideo,
