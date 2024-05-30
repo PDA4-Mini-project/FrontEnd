@@ -14,11 +14,10 @@ export default function GardenInsidePage() {
     const roomId = useSelector((state) => state.garden.roomId);
     const userId = useMemo(() => sessionStorage.getItem('userId'), []);
     const navigate = useNavigate();
-    const { MyVideo, RemoteVideo, toggleMuteAudio, toggleHideVideo, handleStatus, isStartEnabled } =
+    const { MyVideo, RemoteVideo, toggleMuteAudio, toggleHideVideo, ready, setReady, handleReady } =
         useContext(WebRtcContext);
     const time = useSelector((state) => state.garden.time);
     const title = useSelector((state) => state.garden.title);
-    const [ready, setReady] = useState(false);
     const [showReview, setShowReview] = useState(false);
     const cancelReview = () => {
         setShowReview(false);
@@ -27,12 +26,12 @@ export default function GardenInsidePage() {
     };
 
     const getReady = () => {
-        setReady(true);
+        handleReady();
         // 여기에 서버에 준비했다는 메세지 보내는 로직 추가해야함
     };
 
     const cancelReady = () => {
-        setReady(false);
+        handleReady();
         // 여기에 서버에 준비 취소했다는 메세지 보내는 로직 추가해야함
     };
 
