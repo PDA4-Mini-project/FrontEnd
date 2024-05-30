@@ -4,6 +4,7 @@ import NavBar from '../../components/Navbar';
 import { useForm } from 'react-hook-form';
 import { Signup } from '../../lib/apis/users';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from '../../components/Toast';
 
 export default function SignupPage() {
     const common = 'rounded-full border-2 border-[#DBDAD3] w-full h-12 px-4';
@@ -21,7 +22,9 @@ export default function SignupPage() {
                     navigate('/login');
                 }
             })
-            .catch((err) => console.log(err));
+            .catch(() => {
+                Toast.fire('이메일 혹은 아이디를 <br> 이미 사용하는 사람이 있어요.', '', 'error');
+            });
     };
     const navigate = useNavigate();
 
