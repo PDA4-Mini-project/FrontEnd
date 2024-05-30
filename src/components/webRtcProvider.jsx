@@ -76,6 +76,8 @@ export default function WebRtcProvider({ children }) {
 
     const handleStart = () => {
         console.log('handle');
+        setCanStart(true);
+        socketRef.current.emit('canStartStateChanged', { roomId: storedRoomId, canStart: true });
     };
 
     const toggleMuteAudio = () => {
@@ -160,6 +162,13 @@ export default function WebRtcProvider({ children }) {
                 setReady(!ready);
             }
         });
+
+        socketRef.current.on('canStartStateChanged', ({ userId, canStart }) => {
+            console.log(`User ${userId} changed canStart state to ${canStart}`);
+            if (userId !== storedUserId) {
+                setCanStart(canStart);
+            }
+        });
         return () => {
             socketRef.current.off('offer', (sdp) => {
                 console.log('recv Offer');
@@ -186,6 +195,7 @@ export default function WebRtcProvider({ children }) {
                 peerRef.current.addIceCandidate(candidate);
             });
             socketRef.current.off('readyStateChanged');
+            socketRef.current.off('canStartStateChanged');
             socketRef.current.disconnect();
         };
     }, []);

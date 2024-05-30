@@ -46,6 +46,7 @@ export default function GardenInsidePage() {
 
     const getStart = () => {
         // 재능 정원 개시!!
+        handleStart();
     };
 
     return (
@@ -64,7 +65,9 @@ export default function GardenInsidePage() {
                     </div>
                     <div className="bg-white rounded-3xl flex flex-col items-center justify-start">
                         <p className="font-bold text-3xl my-9">{title}</p>
-                        {isHost ? (
+                        {canStart ? (
+                            <p className="text-green-500 font-bold text-xl">재능 정원이 열렸습니다!</p>
+                        ) : isHost ? (
                             ready ? (
                                 <FuncButton text="시작하기" color="green" func={getStart} />
                             ) : (
