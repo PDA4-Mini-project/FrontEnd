@@ -105,10 +105,35 @@ export default function TalentFlowers() {
         s5,
     };
 
+    const colors = {
+        기술: 'bg-[#FEA29D]',
+        상담: 'bg-[#441961]',
+        자기개발: 'bg-[#FFC5CF]',
+        예술: 'bg-[#FE3A52]',
+        언어: 'bg-[#A0ACEC]',
+        생활: 'bg-[#FC9925]',
+    };
+
+    const exp = {
+        0: 'w-0',
+        1: 'w-1/12',
+        2: 'w-2/12',
+        3: 'w-3/12',
+        4: 'w-4/12',
+        5: 'w-5/12',
+        6: 'w-6/12',
+        7: 'w-7/12',
+        8: 'w-8/12',
+        9: 'w-9/12',
+        10: 'w-10/12',
+        11: 'w-11/12',
+        12: 'w-12/12',
+    };
+
     const navigate = useNavigate();
 
     return (
-        <div className="bg-white mt-12 p-12 grid gap-12">
+        <div className="bg-white mt-12 py-12 px-24 grid gap-12">
             <p className="font-bold text-xl text-center">나의 재능꽃</p>
             {flowers?.map((el, i) => (
                 <div className="flex justify-center space-x-12" key={i}>
@@ -118,7 +143,12 @@ export default function TalentFlowers() {
                             {flowerName[el.theme_name]}({el.theme_name})
                         </p>
                         <p className="font-bold text-lg">Lv.{el.level}</p>
-                        <div>게이지가 있을 예정</div>
+                        <div className="flex items-center space-x-6">
+                            <div className="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
+                                <div className={`${colors[el.theme_name]} h-4 rounded-full ${exp[el.exp]}`}></div>
+                            </div>
+                            <p>{(el.exp / 12) * 100}%</p>
+                        </div>
                     </div>
                 </div>
             ))}
