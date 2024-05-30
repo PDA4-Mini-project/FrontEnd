@@ -4,9 +4,11 @@ import NavButton from './NavButton';
 import { useEffect, useState } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
 import { Logout } from '../lib/apis/users';
+import { useSelector } from 'react-redux';
 
 export default function NavBar() {
     const [userId, setUserId] = useState('');
+    const user = useSelector((state) => state.user.user);
     const logout = () => {
         Logout().then((data) => {
             if (data.status === 200) {
@@ -40,10 +42,13 @@ export default function NavBar() {
                                 <span>Logout</span>
                             </div>
                         </div>
-                        <PersonCircle
-                            className="w-10 h-10 fill-current text-main-green hover:cursor-pointer"
-                            onClick={() => navigate('/profile')}
-                        />
+                        <div>
+                            <PersonCircle
+                                className="w-7 h-7 fill-current text-main-green hover:cursor-pointer"
+                                onClick={() => navigate('/profile')}
+                            />
+                            <span>{user.name}님</span>
+                        </div>
                     </div>
                 ) : (
                     <div className="flex gap-3">

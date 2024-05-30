@@ -12,6 +12,8 @@ import { CameraFill } from 'react-bootstrap-icons';
 import { useForm } from 'react-hook-form';
 import { EditProfileImage, GetProfile } from '../../lib/apis/profile';
 import { saveImageUrl, saveProfile, saveReviewScore, saveUserName, saveUserTheme } from '../../store/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { Toast } from '../../components/Toast';
 
 export default function ProfilePage() {
     const user = useSelector((state) => state.user.user);
@@ -29,6 +31,7 @@ export default function ProfilePage() {
     const dispatch = useDispatch();
     const [preview, setPreview] = useState('');
     const avatar = watch('image');
+    const navigate = useNavigate();
 
     const onSubmit = () => {
         console.log('1');
@@ -61,6 +64,8 @@ export default function ProfilePage() {
         const userId = sessionStorage.getItem('userId');
 
         if (!userId) {
+            Toast.fire('로그인 후 이용해주세요', '', 'error');
+            navigate('/login');
             return;
         }
         GetProfile(userId)

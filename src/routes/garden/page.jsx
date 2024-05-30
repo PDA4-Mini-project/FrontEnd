@@ -5,6 +5,8 @@ import RoomInfoModal from '../../components/RoomInfoModal';
 import FuncButton from '../../components/FuncButton';
 import GardenCreateModal from '../../components/GardenCreateModal';
 import { getGardenList } from '../../lib/apis/gardens';
+import { useNavigate } from 'react-router-dom';
+import { Toast } from '../../components/Toast';
 
 export default function GardenPage() {
     // 나중에 정원 목록 불러오는 API와 연결해야함
@@ -13,8 +15,17 @@ export default function GardenPage() {
     const [infoModal, setInfoModal] = useState(false);
     const [roomNum, setRoomNum] = useState(0);
     const [createModal, setCreateModal] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const userId = sessionStorage.getItem('userId');
+
+        if (!userId) {
+            Toast.fire('로그인 후 이용해주세요', '', 'error');
+            navigate('/login');
+            return;
+        }
+
         getGardenList().then((data) => {
             if (Array.isArray(data)) {
                 const sortedRooms = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
