@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from './Toast';
+import { startGarden } from '../lib/apis/gardens';
 
 /**
  * [first user # 1]
@@ -74,12 +75,20 @@ export default function WebRtcProvider({ children }) {
         socketRef.current.emit('readyStateChanged', { roomId: storedRoomId, userId: storedUserId, ready: ready });
     };
 
-    const handleStart = () => {
-        console.log('handle');
-        setCanStart(true);
-        socketRef.current.emit('canStartStateChanged', { roomId: storedRoomId, canStart: true });
+    const handleStart = async () => {
+        try {
+            const data = await startGarden({ storedRoomId });
+            console.log('Garden started successfully:', data);
+            setCanStart(true);
+            socketRef.current.emit('canStartStateChanged', { roomId: storedRoomId, canStart: true });
+        } catch (error) {
+            console.error('Failed to start the garden:', error.message);
+            Toast.fire({
+                icon: 'error',
+                title: error.message,
+            });
+        }
     };
-
     const toggleMuteAudio = () => {
         const stream = myVideoRef.current?.srcObject;
         if (stream && stream.getAudioTracks().length > 0) {
