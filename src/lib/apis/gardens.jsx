@@ -23,3 +23,9 @@ export async function startGarden({ storedRoomId }) {
     });
     return resp.data;
 }
+
+export async function makeRate(roomId, reviewScore) {
+    const data = { ...(roomId && { roomId }), ...(reviewScore && { reviewScore }) };
+    const resp = await service.patch('/end', data);
+    return resp;
+}

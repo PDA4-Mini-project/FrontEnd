@@ -42,7 +42,7 @@ export default function NavBar() {
                                 <span>Logout</span>
                             </div>
                         </div>
-                        <div>
+                        <div className="grid justify-items-center">
                             <PersonCircle
                                 className="w-7 h-7 fill-current text-main-green hover:cursor-pointer"
                                 onClick={() => navigate('/profile')}

@@ -5,8 +5,31 @@ import lavender from '/flowers/lavender.png';
 import tulip from '/flowers/tulip.png';
 import rose from '/flowers/rose.png';
 import lotus from '/flowers/lotus.png';
+import { useEffect } from 'react';
+import { GetProfile } from '../../lib/apis/profile';
+import { useDispatch } from 'react-redux';
+import { saveProfile, saveReviewScore, saveUserName, saveUserTheme } from '../../store/userSlice';
 
 export default function InfoPage() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const userId = sessionStorage.getItem('userId');
+
+        if (!userId) {
+            return;
+        }
+        GetProfile(userId)
+            .then((data) => {
+                console.log(data);
+                dispatch(saveUserName(data.userName.userName));
+                dispatch(saveProfile(data.profile));
+                dispatch(saveReviewScore(data.reviewData.average_score));
+                dispatch(saveUserTheme(data.userThemes));
+            })
+            .catch((err) => console.log(err));
+    }, []);
+
     return (
         <div>
             <NavBar />
