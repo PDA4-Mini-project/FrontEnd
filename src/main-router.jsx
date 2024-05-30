@@ -38,11 +38,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/garden/inside',
-        element: (
-            <WebRtcProvider>
-                <GardenInsidePage />
-            </WebRtcProvider>
-        ),
+        element: <GardenInsidePage />,
     },
 ]);
 

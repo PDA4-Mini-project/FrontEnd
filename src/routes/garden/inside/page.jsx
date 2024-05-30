@@ -43,7 +43,7 @@ export default function GardenInsidePage() {
                 <div className="flex space-x-4">
                     <div
                         onClick={() => {
-                            toggleMuteAudio();
+                            // toggleMuteAudio();
                             setMicOn(!micOn);
                         }}
                         className="grid justify-items-center min-w-14"
@@ -62,7 +62,7 @@ export default function GardenInsidePage() {
                     </div>
                     <div
                         onClick={() => {
-                            toggleHideVideo();
+                            // toggleHideVideo();
                             setCameraOn(!cameraOn);
                         }}
                         className="grid justify-items-center"
