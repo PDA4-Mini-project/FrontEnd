@@ -2,6 +2,7 @@ import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react
 import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from './Toast';
 
 /**
  * [first user # 1]
@@ -256,6 +257,7 @@ export default function WebRtcProvider({ children }) {
             });
 
             socketRef.current.on('roomFull', () => {
+                Toast.fire('이미 진행 중인 정원입니다. 다른 정원을 이용해주세요', '', 'error');
                 navigate('/garden');
             });
         }
