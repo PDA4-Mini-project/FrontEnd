@@ -1,8 +1,17 @@
 import CategoryTag from './CategoryTag';
 import FuncButton from './FuncButton';
+import { useDispatch } from 'react-redux';
+import { saveRoomId } from '~/store/gardenSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function RoomInfoModal(props) {
     const onHide = props.onHide;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const joinRoom = () => {
+        dispatch(saveRoomId(roomInfo.roomId));
+        navigate('/garden/inside');
+    };
     const roomInfo = props.roomInfo;
     const handleModalClick = (e) => {
         if (e.target === e.currentTarget) {
@@ -23,7 +32,7 @@ export default function RoomInfoModal(props) {
                 </div>
 
                 <div className="flex space-x-9">
-                    <FuncButton size="sm" text="정원 입장" func={onHide} color="green" />
+                    <FuncButton size="sm" text="정원 입장" func={joinRoom} color="green" />
                     <FuncButton size="sm" text="닫기" func={onHide} />
                 </div>
             </div>

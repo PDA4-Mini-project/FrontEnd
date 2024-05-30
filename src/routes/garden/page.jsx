@@ -16,9 +16,9 @@ export default function GardenPage() {
 
     useEffect(() => {
         getGardenList().then((data) => {
-            console.log(data);
             if (Array.isArray(data)) {
-                setRoomList(data);
+                const sortedRooms = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setRoomList(sortedRooms);
             } else {
                 setRoomList([]);
             }
