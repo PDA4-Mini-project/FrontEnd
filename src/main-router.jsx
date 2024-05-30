@@ -7,6 +7,8 @@ import ProfilePage from './routes/profile/page';
 import GardenPage from './routes/garden/page';
 import GardenInsidePage from './routes/garden/inside/page';
 import WebRtcProvider from './components/webRtcProvider';
+import InfoPage from './routes/info/page';
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
     {
         path: '/garden/inside',
         element: <GardenInsidePage />,
+    },
+    {
+        path: '/info',
+        element: <InfoPage />,
     },
 ]);
 
