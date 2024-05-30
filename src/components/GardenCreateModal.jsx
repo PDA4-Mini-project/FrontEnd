@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { saveRoomId } from '~/store/gardenSlice';
 import { Toast } from './Toast';
-import { saveRoomTime } from '../store/gardenSlice';
+import { saveRoomTime, saveRoomTitle } from '../store/gardenSlice';
 
 export default function GardenCreateModal(props) {
     const onHide = props.onHide;
@@ -47,6 +47,7 @@ export default function GardenCreateModal(props) {
         createGarden({ _id, time, title, category }).then((data) => {
             dispatch(saveRoomId(data.roomId));
             dispatch(saveRoomTime(Number(time)));
+            dispatch(saveRoomTitle(title));
             navigate('/garden/inside');
         });
         onHide();

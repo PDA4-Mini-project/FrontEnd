@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     roomId: '초기',
     time: 0,
+    title: '',
 };
 
 const gardenSlice = createSlice({
@@ -20,8 +21,12 @@ const gardenSlice = createSlice({
             const newTime = action.payload;
             state.time = newTime;
         },
+        saveRoomTitle: (state, action) => {
+            const newTitle = action.payload;
+            state.title = newTitle;
+        },
     },
 });
 
 export default gardenSlice.reducer;
-export const { reset, saveRoomId, saveRoomTime } = gardenSlice.actions;
+export const { reset, saveRoomId, saveRoomTime, saveRoomTitle } = gardenSlice.actions;
