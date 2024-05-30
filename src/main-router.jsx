@@ -6,6 +6,7 @@ import ProfileLayout from './routes/profile/layout';
 import ProfilePage from './routes/profile/page';
 import GardenPage from './routes/garden/page';
 import GardenInsidePage from './routes/garden/inside/page';
+import InfoPage from './routes/info/page';
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
     {
         path: '/garden/inside',
         element: <GardenInsidePage />,
+    },
+    {
+        path: '/info',
+        element: <InfoPage />,
     },
 ]);
 
