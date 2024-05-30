@@ -7,6 +7,9 @@ import GardenCreateModal from '../../components/GardenCreateModal';
 import { getGardenList } from '../../lib/apis/gardens';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from '../../components/Toast';
+import { GetProfile } from '../../lib/apis/profile';
+import { useDispatch } from 'react-redux';
+import { saveProfile, saveReviewScore, saveUserName, saveUserTheme } from '~/store/userSlice';
 
 export default function GardenPage() {
     // 나중에 정원 목록 불러오는 API와 연결해야함
@@ -16,6 +19,7 @@ export default function GardenPage() {
     const [roomNum, setRoomNum] = useState(0);
     const [createModal, setCreateModal] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const userId = sessionStorage.getItem('userId');
@@ -34,6 +38,16 @@ export default function GardenPage() {
                 setRoomList([]);
             }
         });
+
+        GetProfile(userId)
+            .then((data) => {
+                console.log(data);
+                dispatch(saveUserName(data.userName.userName));
+                dispatch(saveProfile(data.profile));
+                dispatch(saveReviewScore(data.reviewData.average_score));
+                dispatch(saveUserTheme(data.userThemes));
+            })
+            .catch((err) => console.log(err));
     }, []);
     return (
         <>
