@@ -27,7 +27,7 @@ export default function NavBar() {
             <img src={logo} onClick={() => navigate('/')} className="hover:cursor-pointer" />
             <div className="flex gap-12">
                 <Link to="/garden">정원</Link>
-                <Link>꽃설명</Link>
+                <Link to="/info">꽃설명</Link>
             </div>
             <div>
                 {userId ? (
