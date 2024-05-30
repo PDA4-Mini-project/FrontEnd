@@ -1,6 +1,8 @@
 import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react';
-import { Socket, io } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 /**
  * [first user # 1]
  * 1. roomId 받아오기
@@ -49,12 +51,14 @@ export default function WebRtcProvider({ children }) {
     const peerRef = useRef();
     const storedRoomId = useSelector((state) => state.garden.roomId);
     const storedUserId = useSelector((state) => state.user.user.userId);
-
-    const emitSocket = (event, args) => {
-        if (socketRef.current) {
-            socketRef.current.emit(event, args);
-        }
-    };
+    const navigate = useNavigate();
+    // 미디어 생성
+    // 소켓 초기화
+    // peerRef초기화
+    // 소켓이벤트 등록
+    // peerRef이벤트 등록
+    // 마지막 addTrack
+    // joinRoom
     const toggleMuteAudio = () => {
         const stream = myVideoRef.current?.srcObject;
         if (stream && stream.getAudioTracks().length > 0) {
@@ -76,14 +80,6 @@ export default function WebRtcProvider({ children }) {
             console.error('No video track available.');
         }
     };
-
-    // 미디어 생성
-    // 소켓 초기화
-    // peerRef초기화
-    // 소켓이벤트 등록
-    // peerRef이벤트 등록
-    // 마지막 addTrack
-    // joinRoom
 
     const initSocket = useCallback(() => {
         socketRef.current = io({
@@ -258,6 +254,10 @@ export default function WebRtcProvider({ children }) {
                 // userId: socketRef.current.id,
                 userId: storedUserId,
             });
+
+            socketRef.current.on('roomFull', () => {
+                navigate('/garden');
+            });
         }
         init();
 
@@ -285,7 +285,6 @@ export default function WebRtcProvider({ children }) {
         <WebRtcContext.Provider
             value={{
                 toggleMuteAudio,
-                emitSocket,
                 toggleHideVideo,
                 MyVideo,
                 RemoteVideo,
