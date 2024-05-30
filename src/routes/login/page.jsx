@@ -3,6 +3,7 @@ import FormButton from '../../components/FormButton';
 import NavBar from '../../components/Navbar';
 import { Login } from '../../lib/apis/users';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from '../../components/Toast';
 
 export default function LoginPage() {
     const common = 'rounded-full border-2 border-[#DBDAD3] w-full h-12 px-4';
@@ -19,7 +20,13 @@ export default function LoginPage() {
                     navigate('/');
                 }
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                if (err.response.status === 400) {
+                    Toast.fire('아이디를 확인해주세요.', '', 'error');
+                } else if (err.response.status === 401) {
+                    Toast.fire('비밀번호를 확인해주세요.', '', 'error');
+                }
+            });
     };
     const navigate = useNavigate();
 
