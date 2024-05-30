@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { WebRtcContext } from '~/components/webRtcProvider';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from '../../../components/Toast';
+import { Timer } from '../../../components/Timer';
 export default function GardenInsidePage() {
     const [micOn, setMicOn] = useState(true);
     const [cameraOn, setCameraOn] = useState(true);
@@ -100,6 +101,7 @@ export default function GardenInsidePage() {
                         )}
                     </div>
                 </div>
+                <Timer time={1} onTimeEnd={() => setShowReview(true)} />
                 <button className="bg-red-600 w-14 h-8 rounded-xl text-white">나가기</button>
             </div>
             {showReview && <ReviewModal onCancel={cancelReview} onHide={() => setShowReview(false)} />}
