@@ -14,11 +14,10 @@ export default function GardenInsidePage() {
     const roomId = useSelector((state) => state.garden.roomId);
     const userId = useMemo(() => sessionStorage.getItem('userId'), []);
     const navigate = useNavigate();
-    const { MyVideo, RemoteVideo, toggleMuteAudio, toggleHideVideo, handleStatus, isStartEnabled } =
+    const { MyVideo, RemoteVideo, toggleMuteAudio, toggleHideVideo, ready, handleReady, isHost } =
         useContext(WebRtcContext);
     const time = useSelector((state) => state.garden.time);
     const title = useSelector((state) => state.garden.title);
-    const [ready, setReady] = useState(false);
     const [showReview, setShowReview] = useState(false);
     const cancelReview = () => {
         setShowReview(false);
@@ -27,12 +26,12 @@ export default function GardenInsidePage() {
     };
 
     const getReady = () => {
-        setReady(true);
+        handleReady();
         // 여기에 서버에 준비했다는 메세지 보내는 로직 추가해야함
     };
 
     const cancelReady = () => {
-        setReady(false);
+        handleReady();
         // 여기에 서버에 준비 취소했다는 메세지 보내는 로직 추가해야함
     };
 
@@ -52,7 +51,13 @@ export default function GardenInsidePage() {
                     </div>
                     <div className="bg-white rounded-3xl flex flex-col items-center justify-start">
                         <p className="font-bold text-3xl my-9">{title}</p>
-                        {ready ? (
+                        {isHost ? (
+                            ready ? (
+                                <FuncButton text="시작하기" color="green" func={getReady} />
+                            ) : (
+                                <FuncButton text="가드너를 기다리는 중" color="green" disabled={true} />
+                            )
+                        ) : ready ? (
                             <FuncButton text="취소하기" color="green" func={cancelReady} />
                         ) : (
                             <FuncButton text="준비하기" color="green" func={getReady} />

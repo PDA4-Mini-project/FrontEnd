@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react';
+import { createContext, useEffect, useRef, forwardRef, useCallback, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +37,9 @@ export const WebRtcContext = createContext({
     toggleHideVideo: () => {},
     MyVideo: undefined,
     remoteVideo: undefined,
+    ready: false,
+    isHost: true,
+    handleReady: () => {},
 });
 
 const Video = forwardRef((props, ref) => {
@@ -53,6 +56,8 @@ export default function WebRtcProvider({ children }) {
     const storedRoomId = useSelector((state) => state.garden.roomId);
     const storedUserId = useSelector((state) => state.user.user.userId);
     const navigate = useNavigate();
+    const [ready, setReady] = useState(false);
+    const [isHost, setIsHost] = useState(true);
     // 미디어 생성
     // 소켓 초기화
     // peerRef초기화
@@ -60,6 +65,11 @@ export default function WebRtcProvider({ children }) {
     // peerRef이벤트 등록
     // 마지막 addTrack
     // joinRoom
+
+    const handleReady = () => {
+        setReady(!ready);
+    };
+
     const toggleMuteAudio = () => {
         const stream = myVideoRef.current?.srcObject;
         if (stream && stream.getAudioTracks().length > 0) {
@@ -92,8 +102,15 @@ export default function WebRtcProvider({ children }) {
             console.log('socket connected');
         });
         // offer signal
-        socketRef.current.on('offer', (sdp) => {
+        socketRef.current.on('offer', ({ host_id, offer: sdp }) => {
             console.log('recv Offer');
+            if (host_id === storedUserId) {
+                console.log('호스트입니다');
+                setIsHost(true);
+            } else {
+                console.log('호스트 아님');
+                setIsHost(false);
+            }
             createAnswer(sdp);
         });
 
@@ -121,6 +138,10 @@ export default function WebRtcProvider({ children }) {
 
         socketRef.current.on('userJoined', ({ userId, numClients }) => {
             console.log('userJoined', userId, numClients);
+            // if (host_id === storedUserId) {
+            //     console.log('호스트입니다');
+            //     setIsHost(isHost);
+            // }
             if (userId) {
                 createOffer();
             }
@@ -173,7 +194,7 @@ export default function WebRtcProvider({ children }) {
             peerRef.current.setLocalDescription(sdp);
             console.log('sent the offer');
             // offer 전달
-            socketRef.current.emit('offer', { roomId: storedRoomId, offer: sdp });
+            socketRef.current.emit('offer', { roomId: storedRoomId, userId: storedUserId, offer: sdp });
         } catch (e) {
             console.error(e);
         }
@@ -290,6 +311,9 @@ export default function WebRtcProvider({ children }) {
                 toggleHideVideo,
                 MyVideo,
                 RemoteVideo,
+                ready,
+                handleReady,
+                isHost,
             }}
         >
             {children}
