@@ -1,16 +1,11 @@
-import { RouterProvider } from 'react-router-dom';
-import router from './main-router';
-import { Provider } from 'react-redux';
-import store from './store/store';
+import { useState } from 'react'
 
 function App() {
-    return (
-        <>
-            <Provider store={store}>
-                <RouterProvider router={router} />
-            </Provider>
-        </>
-    );
+  return (
+    <>
+      <h1>프로젝트 시작</h1>
+    </>
+  )
 }
 
-export default App;
+export default App
