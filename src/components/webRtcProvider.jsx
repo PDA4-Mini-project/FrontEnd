@@ -1,5 +1,6 @@
 import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
+import { useSelector } from 'react-redux';
 /**
  * [first user # 1]
  * 1. roomId 받아오기
@@ -46,7 +47,8 @@ export default function WebRtcProvider({ children }) {
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
     const peerRef = useRef();
-
+    const storedRoomId = useSelector((state) => state.garden.roomId);
+    const storedUserId = useSelector((state) => state.user.user.userId);
     // 미디어 생성
     // 소켓 초기화
     // peerRef초기화
@@ -129,7 +131,10 @@ export default function WebRtcProvider({ children }) {
     }, []);
 
     const initPeer = useCallback(() => {
-        peerRef.current = new RTCPeerConnection();
+        const configuration = {
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }], // 예제 STUN 서버
+        };
+        peerRef.current = new RTCPeerConnection(configuration);
     }, []);
 
     const createOffer = async () => {
@@ -143,7 +148,7 @@ export default function WebRtcProvider({ children }) {
             peerRef.current.setLocalDescription(sdp);
             console.log('sent the offer');
             // offer 전달
-            socketRef.current.emit('offer', { roomId: '0530', offer: sdp });
+            socketRef.current.emit('offer', { roomId: storedRoomId, offer: sdp });
         } catch (e) {
             console.error(e);
         }
@@ -165,7 +170,7 @@ export default function WebRtcProvider({ children }) {
             // answer를 LocalDescription에 등록해 줍니다. (PeerB 기준)
             peerRef.current.setLocalDescription(answer);
             console.log('sent the answer', answer);
-            socketRef.current.emit('answer', { roomId: '0530', answer: answer });
+            socketRef.current.emit('answer', { roomId: storedRoomId, answer: answer });
         } catch (e) {
             console.error(e);
         }
@@ -195,7 +200,7 @@ export default function WebRtcProvider({ children }) {
                     console.log('recv candidate', e.candidate);
                     console.log(socketRef.current);
                     socketRef.current.emit('candidate', {
-                        roomId: '0530',
+                        roomId: storedRoomId,
                         candidate: e.candidate,
                     });
                 }
@@ -220,10 +225,10 @@ export default function WebRtcProvider({ children }) {
 
             // 마운트시 해당 방의 roomName을 서버에 전달
             socketRef.current.emit('joinRoom', {
-                roomId: '0530',
+                roomId: storedRoomId,
                 // userId: undefined,
                 // userId: socketRef.current.id,
-                userId: sessionStorage.getItem('userId'),
+                userId: storedUserId,
             });
         }
         init();
@@ -237,8 +242,9 @@ export default function WebRtcProvider({ children }) {
                 peerRef.current.close();
             }
         };
+        // }
         // stream설정
-    }, [initPeer, initSocket]);
+    }, [initPeer, initSocket, storedRoomId, storedUserId]);
 
     const MyVideo = useCallback((props) => {
         return <Video ref={myVideoRef} {...props} />;

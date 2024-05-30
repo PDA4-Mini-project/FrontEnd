@@ -1,26 +1,19 @@
 import NavBar from '~/components/Navbar';
 import { MicFill, MicMuteFill, CameraVideoFill, CameraVideoOffFill } from 'react-bootstrap-icons';
-import { useState, useRef, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { io } from 'socket.io-client';
 import { WebRtcContext } from '~/components/webRtcProvider';
-
-const socket = io();
-socket.on('connect', () => {
-    console.log('connected');
-});
 
 export default function GardenInsidePage() {
     const [micOn, setMicOn] = useState(true);
     const [cameraOn, setCameraOn] = useState(true);
     const roomId = useSelector((state) => state.garden.roomId);
     const userId = useMemo(() => sessionStorage.getItem('userId'), []);
-    const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef(null);
-    const [localStream, setLocalStream] = useState(null);
-    const [remoteStream, setRemoteStream] = useState(null);
-    const [peerConnection, setPeerConnection] = useState(null);
-    const { MyVideo, RemoteVideo, toggleMuteAudio, toggleHideVideo } = useContext(WebRtcContext);
+    const {
+        MyVideo,
+        RemoteVideo,
+        // , toggleMuteAudio, toggleHideVideo
+    } = useContext(WebRtcContext);
 
     return (
         <div className="flex flex-col h-dvh">
