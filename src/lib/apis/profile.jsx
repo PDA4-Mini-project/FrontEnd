@@ -15,13 +15,14 @@ export async function EditIntro(content, user_id) {
     return res;
 }
 
-export async function EditProfileImage(url) {
-    const res = await service.post('/image', url);
-    return res.data;
+export async function EditProfileImage(user_id, url) {
+    const data = { user_id: user_id, profile_img_url: url };
+    const res = await service.post('/image', data);
+    return res;
 }
 
 export async function EditPorfolioUrl(portfolio_url, user_id) {
-    const data = {portfolio_url: portfolio_url, user_id: user_id}
+    const data = { portfolio_url: portfolio_url, user_id: user_id };
     const res = await service.post('/portfolio', data);
     return res;
 }
