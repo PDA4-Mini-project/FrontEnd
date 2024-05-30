@@ -29,17 +29,8 @@ export default function ReviewModal(props) {
         setRating(score);
     };
 
-    const handleModalClick = (e) => {
-        if (e.target === e.currentTarget) {
-            onHide();
-        }
-    };
-
     return (
-        <div
-            className="z-10 bg-black/30 w-screen h-screen fixed left-0 top-0 flex justify-center items-center"
-            onClick={handleModalClick}
-        >
+        <div className="z-10 bg-black/30 w-screen h-screen fixed left-0 top-0 flex justify-center items-center">
             <div className="w-[648px] h-fit bg-white py-14 px-28 rounded-3xl grid justify-items-center gap-9">
                 <p className="font-bold text-3xl">정원사</p>
                 <p>정원사님의 재능기부는 어땠나요?</p>
