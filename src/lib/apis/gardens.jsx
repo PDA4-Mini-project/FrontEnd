@@ -17,3 +17,9 @@ export async function createGarden({ _id, time, title, category }) {
     });
     return resp.data;
 }
+
+export async function makeRate(user_id, rate) {
+    const data = { review_id: user_id, review_score: rate };
+    const resp = await service.patch('/end', data);
+    return resp;
+}

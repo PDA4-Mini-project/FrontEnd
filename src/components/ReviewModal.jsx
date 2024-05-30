@@ -5,7 +5,7 @@ import black from '~/public/흑백꽃.png';
 import color from '~/public/컬러꽃.png';
 import { useForm } from 'react-hook-form';
 import { Toast } from './Toast';
-import { makeRate } from '../lib/apis/rate';
+import { makeRate } from '../lib/apis/gardens';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
