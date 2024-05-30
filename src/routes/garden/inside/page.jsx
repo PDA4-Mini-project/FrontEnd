@@ -8,6 +8,7 @@ import { WebRtcContext } from '~/components/webRtcProvider';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from '../../../components/Toast';
 import { Timer } from '../../../components/Timer';
+import { makeRate } from '../../../lib/apis/gardens';
 export default function GardenInsidePage() {
     const [micOn, setMicOn] = useState(true);
     const [cameraOn, setCameraOn] = useState(true);
@@ -27,9 +28,11 @@ export default function GardenInsidePage() {
     } = useContext(WebRtcContext);
     const time = useSelector((state) => state.garden.time);
     const title = useSelector((state) => state.garden.title);
+    const roomMaker = useSelector((state) => state.garden._id);
     const [showReview, setShowReview] = useState(false);
     const cancelReview = () => {
         setShowReview(false);
+        makeRate(roomId);
         navigate('/garden');
         Toast.fire('리뷰를 남기지않았어요', '', 'error');
     };
@@ -47,6 +50,16 @@ export default function GardenInsidePage() {
     const getStart = () => {
         // 재능 정원 개시!!
         handleStart();
+    };
+
+    // 방 만든 사람만 리뷰 모달 볼 수 있도록
+    const onTimeEnd = () => {
+        if (roomMaker === userId) {
+            setShowReview(true);
+        } else {
+            navigate('/garden');
+            Toast.fire('재능 공유가 끝났어요', '', 'success');
+        }
     };
 
     return (
@@ -122,7 +135,7 @@ export default function GardenInsidePage() {
                         )}
                     </div>
                 </div>
-                <Timer time={1} onTimeEnd={() => setShowReview(true)} />
+                <Timer time={1} onTimeEnd={onTimeEnd} />
                 <button className="bg-red-600 w-14 h-8 rounded-xl text-white">나가기</button>
             </div>
             {showReview && <ReviewModal onCancel={cancelReview} onHide={() => setShowReview(false)} />}
