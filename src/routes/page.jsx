@@ -4,7 +4,7 @@ import { GetProfile } from '../lib/apis/profile';
 import { useDispatch } from 'react-redux';
 import { saveProfile, saveReviewScore, saveUserName, saveUserTheme } from '../store/userSlice';
 import FuncButton from '../components/FuncButton';
-import p1 from '/flowers/lavenda.png';
+import p1 from '/flowers/lavender.png';
 import p2 from '/p2.png';
 import no from '/notalent.png';
 import { useNavigate } from 'react-router-dom';
