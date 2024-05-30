@@ -211,7 +211,14 @@ export default function WebRtcProvider({ children }) {
 
     const initPeer = useCallback(() => {
         const configuration = {
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }], // 예제 STUN 서버
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                {
+                    urls: 'turn:43.203.214.176:3478',
+                    username: import.meta.env.VITE_WEBRTC_USERNAME,
+                    credential: import.meta.env.VITE_WEBRTC_CREDENTIAL,
+                },
+            ], // 예제 STUN 서버
         };
         peerRef.current = new RTCPeerConnection(configuration);
     }, []);
