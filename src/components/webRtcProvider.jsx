@@ -1,6 +1,9 @@
-import { createContext, useEffect, useRef, forwardRef, useCallback } from 'react';
+import { createContext, useEffect, useRef, forwardRef, useCallback, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Toast } from './Toast';
+
 /**
  * [first user # 1]
  * 1. roomId 받아오기
@@ -34,6 +37,9 @@ export const WebRtcContext = createContext({
     toggleHideVideo: () => {},
     MyVideo: undefined,
     remoteVideo: undefined,
+    ready: false,
+    isHost: true,
+    handleReady: () => {},
 });
 
 const Video = forwardRef((props, ref) => {
@@ -49,6 +55,9 @@ export default function WebRtcProvider({ children }) {
     const peerRef = useRef();
     const storedRoomId = useSelector((state) => state.garden.roomId);
     const storedUserId = useSelector((state) => state.user.user.userId);
+    const navigate = useNavigate();
+    const [ready, setReady] = useState(false);
+    const [isHost, setIsHost] = useState(true);
     // 미디어 생성
     // 소켓 초기화
     // peerRef초기화
@@ -56,6 +65,32 @@ export default function WebRtcProvider({ children }) {
     // peerRef이벤트 등록
     // 마지막 addTrack
     // joinRoom
+
+    const handleReady = () => {
+        setReady(!ready);
+    };
+
+    const toggleMuteAudio = () => {
+        const stream = myVideoRef.current?.srcObject;
+        if (stream && stream.getAudioTracks().length > 0) {
+            const audioTrack = stream.getAudioTracks()[0];
+            audioTrack.enabled = !audioTrack.enabled; // 오디오 트랙 상태 토글
+            console.log(`Audio track is now ${audioTrack.enabled ? 'unmuted' : 'muted'}.`);
+        } else {
+            console.error('No audio track available.');
+        }
+    };
+
+    const toggleHideVideo = () => {
+        const stream = myVideoRef.current?.srcObject;
+        if (stream && stream.getVideoTracks().length > 0) {
+            const videoTrack = stream.getVideoTracks()[0];
+            videoTrack.enabled = !videoTrack.enabled; // 비디오 트랙 상태 토글
+            console.log(`Video track is now ${videoTrack.enabled ? 'visible' : 'hidden'}.`);
+        } else {
+            console.error('No video track available.');
+        }
+    };
 
     const initSocket = useCallback(() => {
         socketRef.current = io({
@@ -67,8 +102,15 @@ export default function WebRtcProvider({ children }) {
             console.log('socket connected');
         });
         // offer signal
-        socketRef.current.on('offer', (sdp) => {
+        socketRef.current.on('offer', ({ host_id, offer: sdp }) => {
             console.log('recv Offer');
+            if (host_id === storedUserId) {
+                console.log('호스트입니다');
+                setIsHost(true);
+            } else {
+                console.log('호스트 아님');
+                setIsHost(false);
+            }
             createAnswer(sdp);
         });
 
@@ -96,6 +138,10 @@ export default function WebRtcProvider({ children }) {
 
         socketRef.current.on('userJoined', ({ userId, numClients }) => {
             console.log('userJoined', userId, numClients);
+            // if (host_id === storedUserId) {
+            //     console.log('호스트입니다');
+            //     setIsHost(isHost);
+            // }
             if (userId) {
                 createOffer();
             }
@@ -148,7 +194,7 @@ export default function WebRtcProvider({ children }) {
             peerRef.current.setLocalDescription(sdp);
             console.log('sent the offer');
             // offer 전달
-            socketRef.current.emit('offer', { roomId: storedRoomId, offer: sdp });
+            socketRef.current.emit('offer', { roomId: storedRoomId, userId: storedUserId, offer: sdp });
         } catch (e) {
             console.error(e);
         }
@@ -230,6 +276,11 @@ export default function WebRtcProvider({ children }) {
                 // userId: socketRef.current.id,
                 userId: storedUserId,
             });
+
+            socketRef.current.on('roomFull', () => {
+                Toast.fire('이미 진행 중인 정원입니다. 다른 정원을 이용해주세요', '', 'error');
+                navigate('/garden');
+            });
         }
         init();
 
@@ -256,10 +307,13 @@ export default function WebRtcProvider({ children }) {
     return (
         <WebRtcContext.Provider
             value={{
-                // toggleMuteAudio,
-                // toggleHideVideo,
+                toggleMuteAudio,
+                toggleHideVideo,
                 MyVideo,
                 RemoteVideo,
+                ready,
+                handleReady,
+                isHost,
             }}
         >
             {children}
