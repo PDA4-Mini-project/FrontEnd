@@ -24,7 +24,7 @@ export default function NavBar() {
 
     return (
         <div className="flex justify-between items-center mx-32 my-6">
-            <img src={logo} />
+            <img src={logo} onClick={() => navigate('/')} className="hover:cursor-pointer" />
             <div className="flex gap-12">
                 <Link to="/garden">정원</Link>
                 <Link>꽃설명</Link>
