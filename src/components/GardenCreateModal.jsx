@@ -7,6 +7,7 @@ import { createGarden } from '../lib/apis/gardens';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { saveRoomId } from '~/store/gardenSlice';
+import { Toast } from './Toast';
 
 export default function GardenCreateModal(props) {
     const onHide = props.onHide;
@@ -37,6 +38,10 @@ export default function GardenCreateModal(props) {
         const _id = sessionStorage.getItem('userId');
         const { time, title } = data;
         const category = gardenCategory;
+        if (!category) {
+            Toast.fire('카테고리를 선택해주세요', '', 'error');
+            return;
+        }
 
         createGarden({ _id, time, title, category }).then((data) => {
             dispatch(saveRoomId(data.roomId));
@@ -76,7 +81,12 @@ export default function GardenCreateModal(props) {
                     <div className="grid grid-cols-2 justify-items-center gap-y-3">
                         {['30', '60', '90', '120'].map((value) => (
                             <label key={value} className="flex items-center cursor-pointer">
-                                <input type="radio" value={value} {...register('time')} className="hidden" />
+                                <input
+                                    type="radio"
+                                    value={value}
+                                    {...register('time', { required: '시간을 선택해주세요' })}
+                                    className="hidden"
+                                />
                                 <div
                                     className={`w-24 h-10 flex items-center justify-center rounded-3xl ${
                                         selectedTime === value ? 'bg-main-green text-white' : 'bg-gray-200'
@@ -87,6 +97,7 @@ export default function GardenCreateModal(props) {
                             </label>
                         ))}
                     </div>
+                    <p className="text-red-500 text-center">{errors?.time?.message}</p>
 
                     <div className="flex pr-6">
                         <FormButton text="정원 만들기" able={true} />
