@@ -24,7 +24,7 @@ export default function ReviewModal(props) {
     };
 
     const [hoveredRating, setHoveredRating] = useState(0);
-    const [rating, setRating] = useState(5);
+    const [rating, setRating] = useState(0);
 
     const handleMouseEnter = (score) => {
         setHoveredRating(score);
