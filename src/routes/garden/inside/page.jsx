@@ -14,8 +14,17 @@ export default function GardenInsidePage() {
     const roomId = useSelector((state) => state.garden.roomId);
     const userId = useMemo(() => sessionStorage.getItem('userId'), []);
     const navigate = useNavigate();
-    const { MyVideo, RemoteVideo, toggleMuteAudio, toggleHideVideo, ready, handleReady, isHost } =
-        useContext(WebRtcContext);
+    const {
+        MyVideo,
+        RemoteVideo,
+        toggleMuteAudio,
+        toggleHideVideo,
+        ready,
+        handleReady,
+        isHost,
+        handleStart,
+        canStart,
+    } = useContext(WebRtcContext);
     const time = useSelector((state) => state.garden.time);
     const title = useSelector((state) => state.garden.title);
     const [showReview, setShowReview] = useState(false);
@@ -35,6 +44,11 @@ export default function GardenInsidePage() {
         // 여기에 서버에 준비 취소했다는 메세지 보내는 로직 추가해야함
     };
 
+    const getStart = () => {
+        // 재능 정원 개시!!
+        handleStart();
+    };
+
     return (
         <div className="flex flex-col h-dvh">
             <NavBar />
@@ -51,14 +65,16 @@ export default function GardenInsidePage() {
                     </div>
                     <div className="bg-white rounded-3xl flex flex-col items-center justify-start">
                         <p className="font-bold text-3xl my-9">{title}</p>
-                        {isHost ? (
+                        {canStart ? (
+                            <p className="text-green-500 font-bold text-xl">재능 정원이 열렸습니다!</p>
+                        ) : isHost ? (
                             ready ? (
-                                <FuncButton text="시작하기" color="green" func={getReady} />
+                                <FuncButton text="시작하기" color="green" func={getStart} />
                             ) : (
-                                <FuncButton text="가드너를 기다리는 중" color="green" disabled={true} />
+                                <FuncButton text="가드너를 기다리는 중" color="gray" disabled={true} />
                             )
                         ) : ready ? (
-                            <FuncButton text="취소하기" color="green" func={cancelReady} />
+                            <FuncButton text="취소하기" color="gray" func={cancelReady} />
                         ) : (
                             <FuncButton text="준비하기" color="green" func={getReady} />
                         )}

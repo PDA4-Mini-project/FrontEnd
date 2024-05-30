@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from './Toast';
+import { startGarden } from '../lib/apis/gardens';
 
 /**
  * [first user # 1]
@@ -39,7 +40,9 @@ export const WebRtcContext = createContext({
     remoteVideo: undefined,
     ready: false,
     isHost: true,
+    canStart: false,
     handleReady: () => {},
+    handleStart: () => {},
 });
 
 const Video = forwardRef((props, ref) => {
@@ -58,6 +61,7 @@ export default function WebRtcProvider({ children }) {
     const navigate = useNavigate();
     const [ready, setReady] = useState(false);
     const [isHost, setIsHost] = useState(true);
+    const [canStart, setCanStart] = useState(false);
     // 미디어 생성
     // 소켓 초기화
     // peerRef초기화
@@ -68,8 +72,23 @@ export default function WebRtcProvider({ children }) {
 
     const handleReady = () => {
         setReady(!ready);
+        socketRef.current.emit('readyStateChanged', { roomId: storedRoomId, userId: storedUserId, ready: ready });
     };
 
+    const handleStart = async () => {
+        try {
+            const data = await startGarden({ storedRoomId });
+            console.log('Garden started successfully:', data);
+            setCanStart(true);
+            socketRef.current.emit('canStartStateChanged', { roomId: storedRoomId, canStart: true });
+        } catch (error) {
+            console.error('Failed to start the garden:', error.message);
+            Toast.fire({
+                icon: 'error',
+                title: error.message,
+            });
+        }
+    };
     const toggleMuteAudio = () => {
         const stream = myVideoRef.current?.srcObject;
         if (stream && stream.getAudioTracks().length > 0) {
@@ -146,7 +165,19 @@ export default function WebRtcProvider({ children }) {
                 createOffer();
             }
         });
+        socketRef.current.on('readyStateChanged', ({ userId, ready }) => {
+            console.log(`User ${userId} changed ready state to ${ready}`);
+            if (userId === storedUserId) {
+                setReady(!ready);
+            }
+        });
 
+        socketRef.current.on('canStartStateChanged', ({ userId, canStart }) => {
+            console.log(`User ${userId} changed canStart state to ${canStart}`);
+            if (userId !== storedUserId) {
+                setCanStart(canStart);
+            }
+        });
         return () => {
             socketRef.current.off('offer', (sdp) => {
                 console.log('recv Offer');
@@ -172,6 +203,8 @@ export default function WebRtcProvider({ children }) {
                 console.log('candidate', candidate);
                 peerRef.current.addIceCandidate(candidate);
             });
+            socketRef.current.off('readyStateChanged');
+            socketRef.current.off('canStartStateChanged');
             socketRef.current.disconnect();
         };
     }, []);
@@ -314,6 +347,8 @@ export default function WebRtcProvider({ children }) {
                 ready,
                 handleReady,
                 isHost,
+                canStart,
+                handleStart,
             }}
         >
             {children}
