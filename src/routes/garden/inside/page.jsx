@@ -9,11 +9,7 @@ export default function GardenInsidePage() {
     const [cameraOn, setCameraOn] = useState(true);
     const roomId = useSelector((state) => state.garden.roomId);
     const userId = useMemo(() => sessionStorage.getItem('userId'), []);
-    const {
-        MyVideo,
-        RemoteVideo,
-        // , toggleMuteAudio, toggleHideVideo
-    } = useContext(WebRtcContext);
+    const { MyVideo, RemoteVideo, toggleMuteAudio, toggleHideVideo } = useContext(WebRtcContext);
 
     return (
         <div className="flex flex-col h-dvh">
@@ -36,7 +32,7 @@ export default function GardenInsidePage() {
                 <div className="flex space-x-4">
                     <div
                         onClick={() => {
-                            // toggleMuteAudio();
+                            toggleMuteAudio();
                             setMicOn(!micOn);
                         }}
                         className="grid justify-items-center min-w-14"
@@ -55,7 +51,7 @@ export default function GardenInsidePage() {
                     </div>
                     <div
                         onClick={() => {
-                            // toggleHideVideo();
+                            toggleHideVideo();
                             setCameraOn(!cameraOn);
                         }}
                         className="grid justify-items-center"

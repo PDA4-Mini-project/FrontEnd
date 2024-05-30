@@ -49,6 +49,29 @@ export default function WebRtcProvider({ children }) {
     const peerRef = useRef();
     const storedRoomId = useSelector((state) => state.garden.roomId);
     const storedUserId = useSelector((state) => state.user.user.userId);
+
+    const toggleMuteAudio = () => {
+        const stream = myVideoRef.current?.srcObject;
+        if (stream && stream.getAudioTracks().length > 0) {
+            const audioTrack = stream.getAudioTracks()[0];
+            audioTrack.enabled = !audioTrack.enabled; // 오디오 트랙 상태 토글
+            console.log(`Audio track is now ${audioTrack.enabled ? 'unmuted' : 'muted'}.`);
+        } else {
+            console.error('No audio track available.');
+        }
+    };
+
+    const toggleHideVideo = () => {
+        const stream = myVideoRef.current?.srcObject;
+        if (stream && stream.getVideoTracks().length > 0) {
+            const videoTrack = stream.getVideoTracks()[0];
+            videoTrack.enabled = !videoTrack.enabled; // 비디오 트랙 상태 토글
+            console.log(`Video track is now ${videoTrack.enabled ? 'visible' : 'hidden'}.`);
+        } else {
+            console.error('No video track available.');
+        }
+    };
+
     // 미디어 생성
     // 소켓 초기화
     // peerRef초기화
@@ -256,8 +279,8 @@ export default function WebRtcProvider({ children }) {
     return (
         <WebRtcContext.Provider
             value={{
-                // toggleMuteAudio,
-                // toggleHideVideo,
+                toggleMuteAudio,
+                toggleHideVideo,
                 MyVideo,
                 RemoteVideo,
             }}
