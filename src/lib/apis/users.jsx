@@ -25,6 +25,11 @@ export async function Logout() {
 }
 
 export async function EditName(name, user_id) {
-    const res = await service.patch(`/${user_id}/nickName`, {nickName: name});
+    const res = await service.patch(`/${user_id}/nickName`, { nickName: name });
+    return res;
+}
+
+export async function getUserBottleCnt(userId) {
+    const res = await service.get(`/${userId}/bottle`);
     return res;
 }

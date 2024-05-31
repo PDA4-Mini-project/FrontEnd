@@ -3,11 +3,12 @@ import logo from '../../public/Logo.svg';
 import NavButton from './NavButton';
 import { useEffect, useState } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
-import { Logout } from '../lib/apis/users';
+import { Logout, getUserBottleCnt } from '../lib/apis/users';
 import { useSelector } from 'react-redux';
 
 export default function NavBar() {
     const [userId, setUserId] = useState('');
+    const [bottleCnt, setBottleCnt] = useState(0);
     const user = useSelector((state) => state.user.user);
     const logout = () => {
         Logout().then((data) => {
@@ -22,6 +23,11 @@ export default function NavBar() {
     useEffect(() => {
         setUserId(sessionStorage.getItem('userId'));
     }, []);
+    useEffect(() => {
+        const userIdForBottle = sessionStorage.getItem('userId');
+        getUserBottleCnt(userIdForBottle).then((data) => setBottleCnt(data.data.bottle_count));
+    }, []);
+
     const navigate = useNavigate();
 
     return (
@@ -48,6 +54,7 @@ export default function NavBar() {
                                 onClick={() => navigate('/profile')}
                             />
                             <span>{user.name}님</span>
+                            <span>{bottleCnt}</span>
                         </div>
                     </div>
                 ) : (

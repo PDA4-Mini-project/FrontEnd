@@ -32,8 +32,10 @@ export default function GardenPage() {
 
         getGardenList().then((data) => {
             if (Array.isArray(data)) {
-                const sortedRooms = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                setRoomList(sortedRooms);
+                const filteredAndSortedRooms = data
+                    .filter((room) => room.user_cnt > 0 && room.user_cnt < 3)
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // createdAt 기준으로 정렬
+                setRoomList(filteredAndSortedRooms);
             } else {
                 setRoomList([]);
             }
