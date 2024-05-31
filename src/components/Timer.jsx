@@ -2,9 +2,9 @@ import { memo, useEffect, useState } from 'react';
 
 export const Timer = memo(({ time, onTimeEnd }) => {
     // time 분
-    const playTime = time * 60 * 1000;
-    // 1분
-    const INTERVAL = 60 * 1000;
+    const playTime = time * 1000;
+    // 1초
+    const INTERVAL = 1000;
     // 남은 시간
     const [leftTime, setLeftTime] = useState(playTime);
 
@@ -13,9 +13,11 @@ export const Timer = memo(({ time, onTimeEnd }) => {
         const totalSeconds = Math.floor(ms / 1000);
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
         return {
             hours: hours.toString(),
             minutes: String(minutes).padStart(2, '0'),
+            seconds: String(seconds).padStart(2, '0'),
         };
     };
 
@@ -35,11 +37,11 @@ export const Timer = memo(({ time, onTimeEnd }) => {
         return () => clearInterval(timer);
     }, []);
 
-    const { hours, minutes } = formatTime(leftTime);
+    const { hours, minutes, seconds } = formatTime(leftTime);
 
     return (
         <p className="text-white font-bold text-2xl w-fit">
-            {hours} : {minutes}
+            {hours} : {minutes} : {seconds}
         </p>
     );
 });
