@@ -62,6 +62,11 @@ export default function GardenInsidePage() {
         }
     };
 
+    const goToGardenAndRefresh = () => {
+        navigate('/garden');
+        window.location.reload();
+    };
+
     return (
         <div className="flex flex-col h-dvh">
             <NavBar />
@@ -135,9 +140,11 @@ export default function GardenInsidePage() {
                         )}
                     </div>
                 </div>
-                {canStart && <Timer time={5} onTimeEnd={onTimeEnd} />}
+                {canStart && <Timer time={20} onTimeEnd={onTimeEnd} />}
 
-                <button className="bg-red-600 w-14 h-8 rounded-xl text-white">나가기</button>
+                <button className="bg-red-600 w-14 h-8 rounded-xl text-white" onClick={goToGardenAndRefresh}>
+                    나가기
+                </button>
             </div>
             {showReview && <ReviewModal onCancel={cancelReview} onHide={() => setShowReview(false)} />}
         </div>
