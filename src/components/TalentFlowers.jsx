@@ -152,7 +152,7 @@ export default function TalentFlowers() {
                     </div>
                 </div>
             ))}
-            {!flowers && (
+            {flowers != [] && (
                 <div className="grid justify-items-center gap-6">
                     <img src={no} />
                     <p className="font-bold text-xl">아직 재능꽃이 없어요</p>
