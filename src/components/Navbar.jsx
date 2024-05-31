@@ -17,6 +17,7 @@ export default function NavBar() {
                 sessionStorage.clear();
                 setUserId('');
                 navigate('/');
+                window.location.reload();
             }
         });
     };
@@ -35,8 +36,26 @@ export default function NavBar() {
         <div className="flex justify-between items-center mx-32 my-6">
             <img src={logo} onClick={() => navigate('/')} className="hover:cursor-pointer" />
             <div className="flex gap-12">
-                <Link to="/garden">정원</Link>
-                <Link to="/info">꽃설명</Link>
+                <Link
+                    to="/garden"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigate('/garden');
+                        window.location.reload();
+                    }}
+                >
+                    정원
+                </Link>
+                <Link
+                    to="/info"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigate('/info');
+                        window.location.reload();
+                    }}
+                >
+                    꽃설명
+                </Link>
             </div>
             <div>
                 {userId ? (
@@ -52,7 +71,10 @@ export default function NavBar() {
                         <div className="grid justify-items-center">
                             <PersonCircle
                                 className="w-7 h-7 fill-current text-main-green hover:cursor-pointer"
-                                onClick={() => navigate('/profile')}
+                                onClick={() => {
+                                    navigate('/profile');
+                                    window.location.reload();
+                                }}
                             />
                             <span>{user.name}님</span>
                         </div>
