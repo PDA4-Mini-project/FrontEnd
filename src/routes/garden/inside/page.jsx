@@ -135,7 +135,8 @@ export default function GardenInsidePage() {
                         )}
                     </div>
                 </div>
-                <Timer time={1} onTimeEnd={onTimeEnd} />
+                {canStart && <Timer time={5} onTimeEnd={onTimeEnd} />}
+
                 <button className="bg-red-600 w-14 h-8 rounded-xl text-white">나가기</button>
             </div>
             {showReview && <ReviewModal onCancel={cancelReview} onHide={() => setShowReview(false)} />}
