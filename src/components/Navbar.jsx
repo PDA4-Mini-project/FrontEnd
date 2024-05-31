@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
 import { Logout, getUserBottleCnt } from '../lib/apis/users';
 import { useSelector } from 'react-redux';
+import bottle from '/bottle.png';
 
 export default function NavBar() {
     const [userId, setUserId] = useState('');
@@ -39,7 +40,7 @@ export default function NavBar() {
             </div>
             <div>
                 {userId ? (
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 items-center">
                         <div onClick={logout} className="flex items-center">
                             <div
                                 className="bg-main-green text-white hover:bg-white hover:text-black w-20 rounded-md flex justify-center items-center hover:cursor-pointer"
@@ -54,7 +55,10 @@ export default function NavBar() {
                                 onClick={() => navigate('/profile')}
                             />
                             <span>{user.name}님</span>
-                            <span>{bottleCnt}</span>
+                        </div>
+                        <div className="grid justify-items-center">
+                            <img src={bottle} className="w-7 h-7" />
+                            <span> X {bottleCnt}</span>
                         </div>
                     </div>
                 ) : (
