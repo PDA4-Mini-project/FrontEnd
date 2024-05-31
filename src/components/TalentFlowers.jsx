@@ -147,12 +147,12 @@ export default function TalentFlowers() {
                             <div className="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
                                 <div className={`${colors[el.theme_name]} h-4 rounded-full ${exp[el.exp]}`}></div>
                             </div>
-                            <p>{(el.exp / 12) * 100}%</p>
+                            <p>{((el.exp / 12) * 100).toFixed(1)}%</p>
                         </div>
                     </div>
                 </div>
             ))}
-            {!flowers && (
+            {flowers != [] && (
                 <div className="grid justify-items-center gap-6">
                     <img src={no} />
                     <p className="font-bold text-xl">아직 재능꽃이 없어요</p>
