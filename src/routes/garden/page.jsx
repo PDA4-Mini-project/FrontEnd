@@ -65,13 +65,13 @@ export default function GardenPage() {
                         <img src={nogarden} />
                     </div>
                 ) : (
-                    roomList.map((el, i) => (
-                        <div className="grid grid-cols-2 justify-items-center px-14 gap-y-11" key={i}>
-                            <div onClick={() => setRoomNum(i)}>
+                    <div className="grid grid-cols-2 justify-items-center px-14 gap-y-11">
+                        {roomList.map((el, i) => (
+                            <div onClick={() => setRoomNum(i)} key={i}>
                                 <GardenCard roomInfo={el} showModal={() => setInfoModal(true)} />
                             </div>
-                        </div>
-                    ))
+                        ))}
+                    </div>
                 )}
                 {createModal ? <GardenCreateModal onHide={() => setCreateModal(false)} /> : null}
                 {infoModal ? <RoomInfoModal onHide={() => setInfoModal(false)} roomInfo={roomList[roomNum]} /> : null}
