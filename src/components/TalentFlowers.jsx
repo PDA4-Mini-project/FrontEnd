@@ -34,7 +34,7 @@ import FuncButton from './FuncButton';
 import { useNavigate } from 'react-router-dom';
 
 export default function TalentFlowers() {
-    const flowers = useSelector((state) => state.userTheme);
+    const flowers = useSelector((state) => state.user.userTheme);
     // || [
     //     {
     //         user_id: 'ha',
