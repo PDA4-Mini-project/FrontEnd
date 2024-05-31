@@ -147,7 +147,7 @@ export default function TalentFlowers() {
                             <div className="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
                                 <div className={`${colors[el.theme_name]} h-4 rounded-full ${exp[el.exp]}`}></div>
                             </div>
-                            <p>{(el.exp / 12) * 100}%</p>
+                            <p>{((el.exp / 12) * 100).toFixed(1)}%</p>
                         </div>
                     </div>
                 </div>
