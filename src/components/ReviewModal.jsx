@@ -16,12 +16,12 @@ export default function ReviewModal(props) {
     const reviewId = useSelector((state) => state.garden._id);
     const navigate = useNavigate();
     // 나중에 정원사 정보랑 연결해야함
-    const gardener = {
-        id: 'ha',
-        name: '최대글자가아홉글자',
-        imageUrl:
-            'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    };
+    // const gardener = {
+    //     id: 'ha',
+    //     name: '최대글자가아홉글자',
+    //     imageUrl:
+    //         'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    // };
 
     const [hoveredRating, setHoveredRating] = useState(0);
     const [rating, setRating] = useState(0);
@@ -62,8 +62,8 @@ export default function ReviewModal(props) {
             <div className="w-[648px] h-fit bg-white py-14 px-28 rounded-3xl grid justify-items-center gap-9">
                 <p className="font-bold text-3xl">정원사</p>
                 <p>정원사님의 재능기부는 어땠나요?</p>
-                <img src={gardener.imageUrl} alt="정원사 사진" className="w-52 h-52 rounded-full" />
-                <p className="font-semibold">{gardener.name}</p>
+                {/* <img src={gardener.imageUrl} alt="정원사 사진" className="w-52 h-52 rounded-full" />
+                <p className="font-semibold">{gardener.name}</p> */}
                 <form className="grid justify-items-center" onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex space-x-3 mb-6">
                         {[...Array(5)].map((_, index) => {
