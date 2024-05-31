@@ -2,13 +2,15 @@ import NavBar from '~/components/Navbar';
 import FuncButton from '../../../components/FuncButton';
 import ReviewModal from '../../../components/ReviewModal';
 import { MicFill, MicMuteFill, CameraVideoFill, CameraVideoOffFill } from 'react-bootstrap-icons';
-import { useState, useMemo, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useMemo, useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { WebRtcContext } from '~/components/webRtcProvider';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from '../../../components/Toast';
 import { Timer } from '../../../components/Timer';
 import { makeRate } from '../../../lib/apis/gardens';
+import { GetProfile } from '../../../lib/apis/profile';
+import { saveProfile, saveReviewScore, saveUserName, saveUserTheme } from '../../../store/userSlice';
 export default function GardenInsidePage() {
     const [micOn, setMicOn] = useState(true);
     const [cameraOn, setCameraOn] = useState(true);
@@ -66,6 +68,24 @@ export default function GardenInsidePage() {
         navigate('/garden');
         window.location.reload();
     };
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        const userId = sessionStorage.getItem('userId');
+
+        if (!userId) {
+            return;
+        }
+        GetProfile(userId)
+            .then((data) => {
+                console.log(data);
+                dispatch(saveUserName(data.userName.userName));
+                dispatch(saveProfile(data.profile));
+                dispatch(saveReviewScore(data.reviewData.average_score));
+                dispatch(saveUserTheme(data.userThemes));
+            })
+            .catch((err) => console.log(err));
+    }, []);
 
     return (
         <div className="flex flex-col h-dvh">
